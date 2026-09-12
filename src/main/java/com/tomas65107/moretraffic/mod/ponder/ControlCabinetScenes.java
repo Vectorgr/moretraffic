@@ -3,7 +3,7 @@ package com.tomas65107.moretraffic.mod.ponder;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import com.tomas65107.moretraffic.block.AdvancedTrafficLightBlockEntity;
 import com.tomas65107.moretraffic.block.FlashingBlinkerBlockEntity;
-import com.tomas65107.moretraffic.data.TrafficLightLight;
+import com.tomas65107.moretraffic.core.TrafficLightLight;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;

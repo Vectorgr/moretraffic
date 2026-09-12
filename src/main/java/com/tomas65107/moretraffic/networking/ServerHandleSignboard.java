@@ -14,7 +14,7 @@ public class ServerHandleSignboard {
             BlockEntity be = level.getBlockEntity(payload.pos());
 
             if (be instanceof SignboardBlockEntity led) {
-                led.loadAdditional(payload.tag(), level.registryAccess());
+                led.read(payload.tag(), level.registryAccess(), true);
                 led.setChanged();
 
                 level.sendBlockUpdated(

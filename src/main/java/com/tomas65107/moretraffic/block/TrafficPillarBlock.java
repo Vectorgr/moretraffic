@@ -2,11 +2,9 @@ package com.tomas65107.moretraffic.block;
 
 import com.mojang.serialization.MapCodec;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
-import com.tomas65107.moretraffic.data.ISimpleBlockProperties;
-import com.tomas65107.moretraffic.data.blocktypes.MTBaseColoredBlockEntity;
+import com.tomas65107.moretraffic.core.blocktypes.MTBaseColoredBlockEntity;
 import com.tomas65107.moretraffic.mod.MoreTraffic;
 import com.tomas65107.moretraffic.mod.registration.MTRegistrate;
-import de.mrjulsen.trafficcraft.block.TrafficSignPostBlock;
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import net.minecraft.core.BlockPos;
@@ -18,9 +16,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -31,19 +27,14 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Objects;
-
 import static com.tomas65107.moretraffic.helpers.HelperFunctions.rotateShapeSpecial;
 import static com.tomas65107.moretraffic.rendering.BlockBoundingBoxes.*;
-import static de.mrjulsen.trafficcraft.registry.ModBlocks.TRAFFIC_SIGN_POST;
 
 public class TrafficPillarBlock extends ColorableBlock implements ITrafficPostLike, IWrenchable {
 
@@ -77,7 +68,7 @@ public class TrafficPillarBlock extends ColorableBlock implements ITrafficPostLi
     public static final EnumProperty<PillarTypes> TYPE = EnumProperty.create("type", PillarTypes.class);
 
     public TrafficPillarBlock(Properties properties) {
-        super(ISimpleBlockProperties.set(properties, SoundType.STONE, MapColor.COLOR_LIGHT_GRAY, ISimpleBlockProperties.Material.MODEL_TOUGH));
+        super(properties);
     }
 
     @Override
@@ -88,11 +79,6 @@ public class TrafficPillarBlock extends ColorableBlock implements ITrafficPostLi
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new MTBaseColoredBlockEntity(MTRegistrate.BASE_COLORED_BE.get(), blockPos, blockState);
-    }
-
-    @Override
-    protected @NotNull List<ItemStack> getDrops(BlockState state, LootParams.@NotNull Builder params) {
-        return List.of(state.getBlock().asItem().getDefaultInstance());
     }
 
     @Override
@@ -141,15 +127,6 @@ public class TrafficPillarBlock extends ColorableBlock implements ITrafficPostLi
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);
-    }
-
-    @Override
-    public float getDestroyProgress(@NotNull BlockState state, Player player, @NotNull BlockGetter world, @NotNull BlockPos pos) {
-        var item = player.getMainHandItem().getItem();
-        if (item instanceof PickaxeItem pickaxe) {
-            return pickaxe.getTier().getSpeed() / 70;
-        }
-        return super.getDestroyProgress(state, player, world, pos);
     }
 
 

@@ -2,11 +2,11 @@ package com.tomas65107.moretraffic.gui.components.buttons;
 
 import com.tomas65107.moretraffic.block.AdvancedTrafficLightBlock;
 import com.tomas65107.moretraffic.block.AdvancedTrafficLightBlockEntity;
-import com.tomas65107.moretraffic.data.ColorsManager;
-import com.tomas65107.moretraffic.data.trafficlightproperties.TrafficLightOrientation;
-import com.tomas65107.moretraffic.data.trafficlightproperties.TrafficLightPosition;
-import com.tomas65107.moretraffic.data.trafficlightproperties.TrafficLightProperty;
-import com.tomas65107.moretraffic.data.trafficlightproperties.TrafficLightScale;
+import com.tomas65107.moretraffic.core.ColorsManager;
+import com.tomas65107.moretraffic.core.trafficlightproperties.TrafficLightOrientation;
+import com.tomas65107.moretraffic.core.trafficlightproperties.TrafficLightPosition;
+import com.tomas65107.moretraffic.core.trafficlightproperties.TrafficLightProperty;
+import com.tomas65107.moretraffic.core.trafficlightproperties.TrafficLightScale;
 import com.tomas65107.moretraffic.gui.tooltip.NoticeBoxTooltip;
 import com.tomas65107.moretraffic.networking.UpdateTrafficLightStatePacket;
 import com.tomas65107.moretraffic.mod.registration.MTRegistrate;

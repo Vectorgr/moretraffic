@@ -1,13 +1,12 @@
 package com.tomas65107.moretraffic.gui.makers;
 
-import com.tomas65107.moretraffic.data.TrafficDisplayPixels;
+import com.tomas65107.moretraffic.core.TrafficDisplayPixels;
 import com.tomas65107.moretraffic.gui.components.buttons.PixelButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.world.item.DyeColor;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public final class PixelGridMaker {

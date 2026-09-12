@@ -1,0 +1,19 @@
+// 1.21.1	2026-09-08T21:37:08.670414	Registrate Provider for moretraffic [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+76d3e422ca22d61d7b12f83b1fa8a65bc505b26e data/minecraft/tags/block/mineable/pickaxe.json
+c6c4d7232cc8463d85f5b401675c84c256162cea data/minecraft/tags/block/mineable/shovel.json
+b3d78c146f07bc096a48ea81896008103846a05c data/moretraffic/loot_table/blocks/advanced_1_traffic_light.json
+1d6e95ddf34473aebc4aeb2b8964aaf9b7494b52 data/moretraffic/loot_table/blocks/advanced_2_traffic_light.json
+4b1d0ba53158195d3bf7382b8df6e1c3bdcd9bc7 data/moretraffic/loot_table/blocks/advanced_3_traffic_light.json
+9ffa64cc1ce157109837977f4958a5c17ccd9ab6 data/moretraffic/loot_table/blocks/ballast_brown.json
+126ce464bd84141e1cc2f96441df0c0ecb61b3f4 data/moretraffic/loot_table/blocks/ballast_gray.json
+5fd17e4ca41c0d870be4cc5b121013d394cdcc64 data/moretraffic/loot_table/blocks/blinker.json
+a3d3a8453fb57e0e5c60c4fb88909e7b7fdac16d data/moretraffic/loot_table/blocks/control_cabinet.json
+f186ed81557d00f28bcd07c376c91c94efea3192 data/moretraffic/loot_table/blocks/derailer.json
+89eb29ec6dc55acd38b4fcce2671094caa06467d data/moretraffic/loot_table/blocks/exposed_concrete.json
+5d53e7f6b0447dff0b0af231863371d9c0764d36 data/moretraffic/loot_table/blocks/floodlight.json
+79171aa0921a34239c10d62aa4f1219188d63dd5 data/moretraffic/loot_table/blocks/girded_truss.json
+e848d14f4180de8b90b8bebbc2acdabec6359831 data/moretraffic/loot_table/blocks/led_light.json
+80ce5e3d3a23eb6dac33c4293eabf0be3bbbf25d data/moretraffic/loot_table/blocks/signboard.json
+78ae41c87c5461be129b9fa9b38b8761e5095ab2 data/moretraffic/loot_table/blocks/traffic_display.json
+87bdae570a67c5dbd8d7e3e5944c1e6aa663a12a data/moretraffic/loot_table/blocks/traffic_pillar.json
+3c1ab026c780422c5397e104b28297b36d1fa4aa data/moretraffic/loot_table/blocks/traffic_truss.json

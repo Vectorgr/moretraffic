@@ -1,13 +1,13 @@
 package com.tomas65107.moretraffic.gui;
 
-import com.tomas65107.moretraffic.data.AbstractSheet;
+import com.tomas65107.moretraffic.core.AbstractSheet;
 import com.tomas65107.moretraffic.gui.components.BetterEditBox;
 import com.tomas65107.moretraffic.gui.components.CustomRenderAsWidget;
 import com.tomas65107.moretraffic.gui.components.LabelWidget;
 import com.tomas65107.moretraffic.gui.components.overriderenders.NonInteractableWidget;
 import com.tomas65107.moretraffic.gui.components.overriderenders.PriorityWidget;
 import com.tomas65107.moretraffic.helpers.ColorHelper;
-import com.tomas65107.moretraffic.data.ColorsManager;
+import com.tomas65107.moretraffic.core.ColorsManager;
 import com.tomas65107.moretraffic.mod.MoreTraffic;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import static com.tomas65107.moretraffic.data.ColorsManager.PRIMARY;
+import static com.tomas65107.moretraffic.core.ColorsManager.PRIMARY;
 import static com.tomas65107.moretraffic.helpers.ColorHelper.rgb;
 
 

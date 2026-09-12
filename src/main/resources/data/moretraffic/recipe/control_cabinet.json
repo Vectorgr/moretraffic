@@ -1,19 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " C ",
-    "ScS",
-    "   "
+    "cCc",
+    " I ",
+    " r "
   ],
   "key": {
     "C": {
       "item": "create:precision_mechanism"
     },
-    "S": {
-      "item": "minecraft:stone"
+    "I": {
+      "item": "minecraft:iron_block"
     },
     "c": {
       "item": "create:electron_tube"
+    },
+    "r": {
+      "item": "minecraft:redstone"
     }
   },
   "result": {

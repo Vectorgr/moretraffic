@@ -2,8 +2,7 @@ package com.tomas65107.moretraffic.block;
 
 import com.mojang.serialization.MapCodec;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
-import com.tomas65107.moretraffic.data.ISimpleBlockProperties;
-import com.tomas65107.moretraffic.data.blocktypes.MTBaseColoredBlockEntity;
+import com.tomas65107.moretraffic.core.blocktypes.MTBaseColoredBlockEntity;
 import com.tomas65107.moretraffic.mod.registration.MTRegistrate;
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import net.minecraft.core.BlockPos;
@@ -12,7 +11,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -22,23 +20,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
-public class MultiblockTrussBlock extends ColorableBlock implements EntityBlock, ISimpleBlockProperties, IWrenchable {
+public class MultiblockTrussBlock extends ColorableBlock implements EntityBlock, IWrenchable {
 
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
 
     public static final MapCodec<MultiblockTrussBlock> CODEC = simpleCodec(MultiblockTrussBlock::new);
 
     public MultiblockTrussBlock(Properties properties) {
-        super(ISimpleBlockProperties.set(properties, SoundType.NETHERITE_BLOCK, MapColor.COLOR_LIGHT_GRAY, Material.FULLBLOCK_NORMAL));
+        super(properties);
     }
 
     @Override
@@ -75,15 +70,6 @@ public class MultiblockTrussBlock extends ColorableBlock implements EntityBlock,
     }
 
     @Override
-    public float getDestroyProgress(@NotNull BlockState state, Player player, @NotNull BlockGetter world, @NotNull BlockPos pos) {
-        var item = player.getMainHandItem().getItem();
-        if (item instanceof PickaxeItem pickaxe) {
-            return pickaxe.getTier().getSpeed() / 70;
-        }
-        return super.getDestroyProgress(state, player, world, pos);
-    }
-
-    @Override
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return Shapes.empty();
     }
@@ -112,10 +98,5 @@ public class MultiblockTrussBlock extends ColorableBlock implements EntityBlock,
     @Override
     public @NotNull BlockState rotate(BlockState pState, Rotation pRotation) {
         return (BlockState)pState.setValue(FACING, pRotation.rotate((Direction)pState.getValue(FACING)));
-    }
-
-    @Override
-    protected @NotNull List<ItemStack> getDrops(@NotNull BlockState state, LootParams.@NotNull Builder params) {
-        return List.of(state.getBlock().asItem().getDefaultInstance());
     }
 }

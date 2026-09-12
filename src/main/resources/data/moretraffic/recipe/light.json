@@ -16,11 +16,11 @@
       "item": "minecraft:glowstone_dust"
     },
     "c": {
-      "item": "create:copper_sheet"
+      "item": "minecraft:redstone_dust"
     }
   },
   "result": {
     "id": "moretraffic:light",
-    "count": 4
+    "count": 3
   }
 }

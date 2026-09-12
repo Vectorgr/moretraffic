@@ -1,7 +1,6 @@
 package com.tomas65107.moretraffic.block;
 
 import com.mojang.serialization.MapCodec;
-import com.tomas65107.moretraffic.data.ISimpleBlockProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -11,7 +10,6 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -21,13 +19,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.List;
 
 import static com.tomas65107.moretraffic.helpers.ColorHelper.rgb;
 
@@ -48,7 +43,7 @@ public class BallastBlock extends FallingBlock {
     }
 
     public BallastBlock(BlockBehaviour.Properties properties) {
-        super(ISimpleBlockProperties.set(properties, SoundType.SUSPICIOUS_GRAVEL, DyeColor.GRAY.getMapColor(), ISimpleBlockProperties.Material.FULLBLOCK_NORMAL));
+        super(properties);
     }
 
     @Override
@@ -84,19 +79,5 @@ public class BallastBlock extends FallingBlock {
             return ItemInteractionResult.SUCCESS;
         }
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-    }
-
-    @Override
-    protected @NotNull List<ItemStack> getDrops(BlockState state, LootParams.@NotNull Builder params) {
-        return List.of(state.getBlock().asItem().getDefaultInstance());
-    }
-
-    @Override
-    public float getDestroyProgress(@NotNull BlockState state, Player player, @NotNull BlockGetter world, @NotNull BlockPos pos) {
-        var item = player.getMainHandItem().getItem();
-        if (item instanceof ShovelItem shovelItem) {
-            return shovelItem.getTier().getSpeed() / 80;
-        }
-        return super.getDestroyProgress(state, player, world, pos);
     }
 }

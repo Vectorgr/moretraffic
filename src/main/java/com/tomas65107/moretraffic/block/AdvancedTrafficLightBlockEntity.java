@@ -1,6 +1,6 @@
 package com.tomas65107.moretraffic.block;
 
-import com.tomas65107.moretraffic.data.TrafficLightLight;
+import com.tomas65107.moretraffic.core.TrafficLightLight;
 import com.tomas65107.moretraffic.gui.containers.AdvancedTrafficLightMenu;
 import com.tomas65107.moretraffic.mod.registration.MTRegistrate;
 import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;

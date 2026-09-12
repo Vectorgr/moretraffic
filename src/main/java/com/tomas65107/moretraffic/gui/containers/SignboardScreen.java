@@ -2,10 +2,9 @@ package com.tomas65107.moretraffic.gui.containers;
 
 import com.tomas65107.moretraffic.block.SignboardBlock;
 import com.tomas65107.moretraffic.block.SignboardBlockEntity;
-import com.tomas65107.moretraffic.data.AbstractSheet;
-import com.tomas65107.moretraffic.data.BoardElement;
-import com.tomas65107.moretraffic.data.ColorsManager;
-import com.tomas65107.moretraffic.data.SpritesManager;
+import com.tomas65107.moretraffic.core.AbstractSheet;
+import com.tomas65107.moretraffic.core.BoardElement;
+import com.tomas65107.moretraffic.core.SpritesManager;
 import com.tomas65107.moretraffic.gui.AbstractTomiContainerScreen;
 import com.tomas65107.moretraffic.gui.components.*;
 import com.tomas65107.moretraffic.gui.components.buttons.AdvancedButton;
@@ -18,7 +17,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,17 +28,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static com.tomas65107.moretraffic.data.ColorsManager.*;
-import static com.tomas65107.moretraffic.data.SpritesManager.INFO;
-import static com.tomas65107.moretraffic.data.SpritesManager.WARNING;
+import static com.tomas65107.moretraffic.core.ColorsManager.*;
+import static com.tomas65107.moretraffic.core.SpritesManager.INFO;
+import static com.tomas65107.moretraffic.core.SpritesManager.PALETTE;
+import static com.tomas65107.moretraffic.core.SpritesManager.WARNING;
 import static com.tomas65107.moretraffic.gui.components.buttons.AdvancedButton.NORMAL_HEIGHT;
 import static com.tomas65107.moretraffic.helpers.ColorHelper.rgb;
+import static com.tomas65107.moretraffic.helpers.HelperFunctions.ff;
+import static com.tomas65107.moretraffic.helpers.HelperFunctions.roundUpToSupportedDigits;
 import static com.tomas65107.moretraffic.helpers.TextCutter.cutTextComponent;
 import static com.tomas65107.moretraffic.helpers.TextHelper.Alignment.CENTER;
 import static com.tomas65107.moretraffic.helpers.TextHelper.align;
@@ -60,6 +63,9 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
     private boolean OOBEVisible;
     boolean toggleoobe = false;
 
+    boolean TEXT_showingRendered = true;
+    boolean TEXT_showingMoreColors = false;
+
     int guiWidth = 191;
     int guiHeight = 164;
 
@@ -78,6 +84,8 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
     @Override
     protected void init() {
         super.init();
+
+        if (be.elements.size() > 7) throw new IllegalArgumentException("Tried to access Signboard elements that overflow max limit!");
 
         guiX = ((this.width - guiWidth) / 2);
         guiY = (this.height - guiHeight) / 2;
@@ -103,7 +111,7 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
         );
 
         if (focusedIndex.get() == -1) {
-            int offset = guiY +50;
+            int offset = guiY +43;
             for (Component component : cutTextComponent(Component.translatable("gui.moretraffic.signboard.none_selected"), 0, 85, true)) {
                 addBaseWidget(new LabelWidget(align(CENTER, component, (this.width/2)-46), offset, component, rgb(PRIMARY), true));
                 offset += 10;
@@ -121,16 +129,26 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
             startposbox.setValue(element.startX + ", " + element.startY);
             startposbox.onSave(() -> {
                 try {
-                    int[] values = Arrays.stream(startposbox.getValue().split(",")).map(String::trim).mapToInt(Integer::parseInt).toArray();
-                    if (!((values[0] < 17) && (values[1] < 17) && (values[0] >= 0) && (values[1] >= 0))) throw new Exception();
-                    element.startX = values[0]; element.startY = values[1];
+                    String[] parts = startposbox.getValue().split(",");
+
+                    float x = roundUpToSupportedDigits(Float.parseFloat(parts[0].trim()));
+                    float y = roundUpToSupportedDigits(Float.parseFloat(parts[1].trim()));
+
+                    if (!(x <= 16 && y <= 16 && x >= 0 && y >= 0)) throw new Exception();
+
+                    element.startX = x; element.startY = y;
                     updateBEAndRefreshBE();
                 } catch (Exception ignored) {}
             });
+
             startposbox.onChange(text -> {
                 try {
-                    int[] values = Arrays.stream(text.split(",")).map(String::trim).mapToInt(Integer::parseInt).toArray();
-                    if (!((values[0] < 17) && (values[1] < 17) && (values[0] >= 0) && (values[1] >= 0))) throw new Exception();
+                    String[] parts = text.split(",");
+
+                    float x = roundUpToSupportedDigits(Float.parseFloat(parts[0].trim()));
+                    float y = roundUpToSupportedDigits(Float.parseFloat(parts[1].trim()));
+
+                    if (!(x <= 16 && y <= 16 && x >= 0 && y >= 0)) throw new Exception();
 
                     startposbox.setTextColor(rgb(PRIMARY));
                     startposbox.hideFloatingTooltip();
@@ -152,7 +170,7 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
                         Component.literal("RECOMMENDED USAGE: Use the preset size picker.\nYou can also manually input the numbers but that may present some errors."),
                         null, NoticeBoxTooltip.TooltipType.WARNING);
                 addBaseWidget(
-                        new HelpElementWidget(guiX+10+30, guiY +39, WARNING, tooltipwarning)
+                        new HelpElementWidget(guiX+10+66, guiY +39, WARNING, tooltipwarning)
                 );
 
                 addBaseWidget(new AdvancedButton(guiX+58, guiY+40-2, 18, 18, null, SpritesManager.LIBRARY, new NoticeBoxTooltip(Component.literal("Show preset sizes (recommended)")), button -> showOOBE(focusedIndex.get())));
@@ -178,6 +196,16 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
 
             } else if (element instanceof BoardElement.Text) {
 
+                addBaseWidget(new AdvancedButton(guiX+58, guiY+40-2, 18, 18, null, SpritesManager.CENTER, new NoticeBoxTooltip(Component.translatable("gui.moretraffic.led_light.center"), Component.literal("Center text horizontally and apply centered position")), button -> {
+                    var textElement = (BoardElement.Text) be.elements.get(focusedIndex.get());
+                    int widthOfTextAdjusted = Minecraft.getInstance().font.width(Objects.requireNonNull(Component.Serializer.fromJson(textElement.json, Minecraft.getInstance().level.registryAccess())));
+
+                    float textScale = textElement.size / 8f;
+
+                    textElement.startX = 8f - widthOfTextAdjusted * textScale / 2f;
+                    updateBEAndRefreshBE();
+                }));
+
                 addBaseWidget(new LabelWidget(guiX+10, guiY+YOffset, Component.literal("Text").withColor(rgb(SECONDARY)), 0xFFFFFF, true));
                 YOffset += 11;
 
@@ -193,21 +221,43 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
                                 public void init(Consumer<AbstractWidget> adder) {
 
                                     final int[] offset = {25};
-                                    for (Component component : cutTextComponent(Component.literal("Type in here simple text by surrounding it with quotes or if you want more precise control over color and format, use JSON"), 0, 250, true)) {
+                                    for (Component component : cutTextComponent(Component.literal("Type in your text, or if you want to customize color and more, use JSON format"), 0, 250, true)) {
                                         adder.accept(new LabelWidget(10, offset[0], component.copy().withColor(rgb(SECONDARY)), rgb(PRIMARY), true));
                                         offset[0] += 10;
                                     }
-                                    offset[0] += 3;
+                                    offset[0] += 5;
 
-                                    var texteditbox = new BetterEditBox(10, offset[0], 250, NORMAL_HEIGHT);
-                                    texteditbox.setMaxLength(800);
-                                    texteditbox.setValue(((BoardElement.Text) be.elements.get(focusedIndex.get())).json);
-                                    texteditbox.onSave(() -> {
-                                        String json = new String(texteditbox.getValue()); // force snapshot copy
+                                    BetterEditBox texteditbox;
+                                    var valueComponent = Objects.requireNonNull(Component.Serializer.fromJson(((BoardElement.Text) be.elements.get(focusedIndex.get())).json, Minecraft.getInstance().level.registryAccess()));
 
-                                        ((BoardElement.Text) be.elements.get(focusedIndex.get())).json = json;
-                                        updateBEAndRefreshBE();
-                                    });
+                                    if (!TEXT_showingRendered) {
+                                        texteditbox = new BetterEditBox(10, offset[0], 250, NORMAL_HEIGHT);
+                                        texteditbox.setMaxLength(900);
+                                        texteditbox.setValue(((BoardElement.Text) be.elements.get(focusedIndex.get())).json);
+                                        texteditbox.setTextColor(rgb(145, 165, 255));
+
+                                        texteditbox.onSave(() -> {
+                                            if (getJsonParseErrorMessage(texteditbox.getValue()) == null) {
+                                                String json = new String(texteditbox.getValue()); // force snapshot copy
+
+                                                ((BoardElement.Text) be.elements.get(focusedIndex.get())).json = json;
+                                                updateBEAndRefreshBE();
+                                            }
+                                        });
+
+                                    } else {
+                                        texteditbox = new RichTextEditBox(10, offset[0], 250, NORMAL_HEIGHT);
+                                        texteditbox.setMaxLength(900);
+                                        ((RichTextEditBox) texteditbox).setRichValue(valueComponent);
+
+                                        texteditbox.onSave(() -> {
+                                            String json = new String(Component.Serializer.toJson(((RichTextEditBox) texteditbox).getRichValue(), Minecraft.getInstance().level.registryAccess())); // force snapshot copy
+
+                                            ((BoardElement.Text) be.elements.get(focusedIndex.get())).json = json;
+                                            updateBEAndRefreshBE();
+                                        });
+
+                                    }
                                     texteditbox.onChange((s -> {
                                         if (getJsonParseErrorMessage(s) == null) {
                                             texteditbox.hideFloatingTooltip();
@@ -219,14 +269,64 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
                                     }));
                                     adder.accept(texteditbox);
 
-                                    offset[0] += NORMAL_HEIGHT+6;
-//
-//                                    for (Component component : cutTextComponent(Component.nullToEmpty(currentError.get()), 0, 180, true)) {
-//                                        adder.accept(new LabelWidget(10, offset[0], component.copy().withColor(rgb(ERROR))));
-//                                        offset[0] += 10;
-//                                    }
+                                    offset[0] += 26;
+
+                                    adder.accept(new LabelWidget(10, offset[0], Component.translatable("gui.moretraffic.signboard.quick_actions.title").withColor(rgb(SECONDARY)), rgb(PRIMARY), true));
+                                    adder.accept(new HelpElementWidget(10+Minecraft.getInstance().font.width(Component.translatable("gui.moretraffic.signboard.quick_actions.title")), offset[0]-5, WARNING, new NoticeBoxTooltip(Component.translatable("gui.moretraffic.signboard.quick_actions.warning"), Component.translatable("gui.moretraffic.signboard.quick_actions.message"), NoticeBoxTooltip.TooltipType.WARNING)));
+                                    offset[0] += 11;
+
+                                    var buttonSpacing = NORMAL_HEIGHT + 1;
+
+                                    adder.accept(new AdvancedButton(10, offset[0], NORMAL_HEIGHT, NORMAL_HEIGHT, Component.literal("B").withStyle(ChatFormatting.BOLD), (NoticeBoxTooltip) null, b->{
+                                        ((BoardElement.Text) be.elements.get(focusedIndex.get())).json = Component.Serializer.toJson(valueComponent.copy().withStyle(ChatFormatting.BOLD), Minecraft.getInstance().level.registryAccess());
+                                        updateBEAndRefreshBE();
+                                    }).setCenterText(true));
+                                    adder.accept(new AdvancedButton(buttonSpacing+10, offset[0], NORMAL_HEIGHT, NORMAL_HEIGHT, Component.literal("I").withStyle(ChatFormatting.ITALIC), (NoticeBoxTooltip) null, b->{
+                                        ((BoardElement.Text) be.elements.get(focusedIndex.get())).json = Component.Serializer.toJson(valueComponent.copy().withStyle(ChatFormatting.ITALIC), Minecraft.getInstance().level.registryAccess());
+                                        updateBEAndRefreshBE();
+                                    }).setCenterText(true));
+                                    adder.accept(new AdvancedButton((buttonSpacing*2)+10, offset[0], NORMAL_HEIGHT, NORMAL_HEIGHT, Component.literal("U").withStyle(ChatFormatting.UNDERLINE), (NoticeBoxTooltip) null, b->{
+                                        ((BoardElement.Text) be.elements.get(focusedIndex.get())).json = Component.Serializer.toJson(valueComponent.copy().withStyle(ChatFormatting.UNDERLINE), Minecraft.getInstance().level.registryAccess());
+                                        updateBEAndRefreshBE();
+                                    }).setCenterText(true));
+                                    adder.accept(new AdvancedButton((buttonSpacing*3)+10, offset[0], NORMAL_HEIGHT, NORMAL_HEIGHT, PALETTE, null, false,b->{
+                                        TEXT_showingMoreColors = !TEXT_showingMoreColors;
+                                        refreshContent();
+                                    }));
+                                    adder.accept(new AdvancedButton((buttonSpacing*4)+10+2, offset[0], NORMAL_HEIGHT, NORMAL_HEIGHT, Component.literal("X").withStyle(ChatFormatting.RED), (NoticeBoxTooltip) null, b->{
+                                        ((BoardElement.Text) be.elements.get(focusedIndex.get())).json = Component.Serializer.toJson(valueComponent.copy().withStyle(ChatFormatting.RESET), Minecraft.getInstance().level.registryAccess());
+                                        updateBEAndRefreshBE();
+                                    }).setCenterText(true));
+
+                                    adder.accept(new AdvancedButton(sheetWidth-90-10, offset[0], 90, NORMAL_HEIGHT, TEXT_showingRendered ? Component.literal("Rendered").withColor(rgb(PRIMARY)) : Component.literal("Raw JSON").withColor(rgb(PRIMARY)), SpritesManager.TEXT_SHIFT , new NoticeBoxTooltip(Component.literal("Currently showing " + (TEXT_showingRendered ? "Rendered" : "Raw JSON")), null, Component.translatable("gui.moretraffic.change"), null), b->{
+                                        TEXT_showingRendered = !TEXT_showingRendered;
+                                        refreshContent();
+                                    }));
+
+                                    offset[0] += 23;
+
+                                    if (TEXT_showingMoreColors) {
+                                        new GridMaker(10, offset[0], adder, c -> {
+                                            ((BoardElement.Text) be.elements.get(focusedIndex.get())).json = Component.Serializer.toJson(valueComponent.copy().withColor(c.getTextColor()), Minecraft.getInstance().level.registryAccess());
+                                            updateBEAndRefreshBE();
+                                            refreshContent();
+                                        }, null, true);
+                                    }
 
                                 }
+
+//                                static String adaptString(String string, boolean presentToUser) {
+//                                    boolean isTheStringJson = !(string.startsWith("\"") && string.endsWith("\""));
+//                                    if (isTheStringJson) {
+//                                        return string;
+//                                    } else {
+//                                        if (presentToUser) {
+//                                            return string.substring(1, string.length()-1);
+//                                        } else {
+//                                            return "\""+string+"\"";
+//                                        }
+//                                    }
+//                                }
 
                                 static String getJsonParseErrorMessage(String json) {
                                     try {
@@ -247,22 +347,31 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
                 sizebox.setValue(String.valueOf(((BoardElement.Text) element).size));
                 sizebox.onSave(() -> {
                     try {
+                        if (Float.parseFloat(sizebox.getValue()) > 15 || 0.5 > Float.parseFloat(sizebox.getValue())) throw new NumberFormatException();
                         ((BoardElement.Text) element).size = Float.parseFloat(sizebox.getValue());
                         updateBEAndRefreshBE();
                     } catch (NumberFormatException ignored) {}
                 });
                 sizebox.onChange(text -> {
                     try {
-                        Float.parseFloat(text);
+                        if (Float.parseFloat(text) > 15 || 0.5 > Float.parseFloat(text)) throw new NumberFormatException();
 
                         sizebox.setTextColor(rgb(PRIMARY));
                         sizebox.hideFloatingTooltip();
                     } catch (NumberFormatException ignored) {
                         sizebox.setTextColor(rgb(ERROR));
-                        sizebox.showFloatingTooltip(new NoticeBoxTooltip(Component.translatable("gui.moretraffic.error_saving"), Component.literal("Incomplete number or not an float number!"), NoticeBoxTooltip.TooltipType.ERROR));
+                        sizebox.showFloatingTooltip(new NoticeBoxTooltip(Component.translatable("gui.moretraffic.error_saving"), Component.literal("Invalid number or not an float number!"), NoticeBoxTooltip.TooltipType.ERROR));
                     }
                 });
                 addBaseWidget(sizebox);
+                addBaseWidget(new AdvancedButton(guiX+58, guiY+YOffset, 12, 12, SpritesManager.TEXT_SMALLER, new NoticeBoxTooltip(Component.literal("Smaller")), true, button -> {
+                    sizebox.setValue(String.valueOf(Float.parseFloat(sizebox.getValue()) - 0.5f));
+                    sizebox.triggerSaveCode();
+                }));
+                addBaseWidget(new AdvancedButton(guiX+58+15, guiY+YOffset, 12, 12, SpritesManager.TEXT_BIGGER, new NoticeBoxTooltip(Component.literal("Bigger")), true, button -> {
+                    sizebox.setValue(String.valueOf(Float.parseFloat(sizebox.getValue()) + 0.5f));
+                    sizebox.triggerSaveCode();
+                }));
 
 
             }
@@ -273,8 +382,8 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
             int finalIndex = index;
             addBaseWidget(
                     new InLineActionLabel(guiX+97, guiY+40+(finalIndex*13),
-                    BoardElement.BoardElementType.byClass(element.getClass()).getComponentOfProperty(),
-                    isTheMainBg(finalIndex) ? rgb(SECONDARY) :  rgb(PRIMARY),
+                    BoardElement.BoardElementType.byClass(element.getClass()).getComponentOfProperty().copy().withStyle(isTheMainBg(finalIndex) ? ChatFormatting.BOLD : ChatFormatting.RESET),
+                    rgb(PRIMARY),
                     true,
                     !isTheMainBg(finalIndex) ? List.of(
                             new AdvancedButton(0, 0, 0, 0, SpritesManager.ICON_TRASHCAN, safeToRenderTooltips() ? new NoticeBoxTooltip(Component.translatable("gui.moretraffic.signboard.element.delete")): null, true, a->{
@@ -288,6 +397,7 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
                                 }
                             }),
                             new AdvancedButton(0, 0, 0, 0, SpritesManager.EXPORT, safeToRenderTooltips() ? new NoticeBoxTooltip(Component.translatable("gui.moretraffic.signboard.element.duplicate")) : null, true, a->{
+                                if (be.elements.size() > 6) return;
                                 be.elements.add(finalIndex, be.elements.get(finalIndex));
                                 updateBEAndRefreshBE();
                             })
@@ -374,7 +484,7 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
 
                             var buttonSuccess = new AdvancedButton(10, 25, 160, NORMAL_HEIGHT, Component.translatable("gui.moretraffic.control_cabinet.import.from_clipboard"), null, null, b -> {
                                 if (!tagToSave.isEmpty()) {
-                                    be.loadAdditional(tagToSave, Minecraft.getInstance().level.registryAccess());
+                                    be.read(tagToSave, Minecraft.getInstance().level.registryAccess(), true);
                                     updateBEAndRefreshBE();
                                     onClose();
                                 }
@@ -455,8 +565,9 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
                         DyeColor currentColor = ((BoardElement.Background)(be.elements.get(indexToModify))).color;
 
                         for (BoardElement.BoardSizes property : BoardElement.BoardSizes.values()) {
-                            adder.accept(new AdvancedButton(10, offsetY, 130, NORMAL_HEIGHT, Component.literal(property.sizeX + "x" + property.sizeY), new NoticeBoxTooltip(null), b -> {
+                            adder.accept(new AdvancedButton(10, offsetY, 130, NORMAL_HEIGHT, Component.literal(ff(property.sizeX) + "x" + ff(property.sizeY)), (NoticeBoxTooltip) null, b -> {
                                 be.elements.set(indexToModify, new BoardElement.Background((16 - property.sizeX) / 2, (16 - property.sizeY) / 2, currentColor));
+                                OOBEVisible = false;
                                 updateBEAndRefreshBE();
                                 onClose();
                             }));
@@ -486,7 +597,10 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
 
     @Override
     protected void containerTick() {
-        if (OOBEVisible && safeToRenderTooltips()) onClose();
+        if (OOBEVisible && safeToRenderTooltips()) {
+            OOBEVisible = false;
+            refreshContent();
+        }
 
         if (queueRefresh) {
             MoreTraffic.LOGGER.debug("queuing ui refresh...");
@@ -509,17 +623,50 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(guiX -150, guiY +137, 10);
 
-            BlockState model = be.getBlockState().setValue(SignboardBlock.FACING, Direction.SOUTH);
+            BlockState modelToRender = be.getBlockState().setValue(SignboardBlock.FACING, Direction.SOUTH);
 
             float scale = 127f;
             guiGraphics.pose().scale(scale, -scale, scale);
 
             BlockState originalBeBs = be.getBlockState();
-            be.setBlockState(model);
+            be.setBlockState(modelToRender);
             beDispatcher.render(be, 0f, guiGraphics.pose(), Minecraft.getInstance().renderBuffers().bufferSource());
             be.setBlockState(originalBeBs);
 
             guiGraphics.pose().popPose();
+        }
+
+        if (!(this.getFocused() instanceof EditBox) && focusedIndex.get() != -1 && safeToRenderTooltips()) {
+            String text = "You can move selected element using the arrow keys on your keyboard.";
+
+            int textWidth = Minecraft.getInstance().font.width(text);
+            int padding = 6;
+
+            int boxWidth = textWidth + padding * 2;
+            int boxHeight = 16;
+
+            int x = (guiGraphics.guiWidth() - boxWidth) / 2;
+            int y = (guiGraphics.guiHeight() - 50);
+
+            guiGraphics.fill(
+                    x,
+                    y,
+                    x + boxWidth,
+                    y + boxHeight,
+                    rgb(0, 0, 0, 167)
+            );
+
+            int textX = x + padding;
+            int textY = y + 4;
+
+            guiGraphics.drawString(
+                    Minecraft.getInstance().font,
+                    text,
+                    textX,
+                    textY,
+                    rgb(SECONDARY),
+                    true
+            );
         }
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -556,6 +703,51 @@ public class SignboardScreen extends AbstractTomiContainerScreen<SignboardMenu> 
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        // Do nothing
+
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.getFocused() instanceof EditBox || focusedIndex.get() == -1 || !safeToRenderTooltips()) {
+            return super.keyPressed(keyCode, scanCode, modifiers);
+        }
+
+        var elementF = be.elements.get(focusedIndex.get());
+
+        switch (keyCode) {
+            case GLFW.GLFW_KEY_UP -> {
+                if (elementF.startY-0.5f <= 16 && elementF.startY-0.5f >= 0) {
+                    elementF.startY -= 0.5f;
+                    updateBEAndRefreshBE();
+                    return true;
+                }
+            }
+
+            case GLFW.GLFW_KEY_DOWN -> {
+                if (elementF.startY+0.5f <= 16 && elementF.startY+0.5f >= 0) {
+                    elementF.startY += 0.5f;
+                    updateBEAndRefreshBE();
+                    return true;
+                }
+            }
+
+            case GLFW.GLFW_KEY_LEFT -> {
+                if (elementF.startX-0.5f <= 16 && elementF.startX-0.5f >= 0) {
+                    elementF.startX -= 0.5f;
+                    updateBEAndRefreshBE();
+                    return true;
+                }
+            }
+
+            case GLFW.GLFW_KEY_RIGHT -> {
+                if (elementF.startX+0.5f <= 16 && elementF.startX+0.5f >= 0) {
+                    elementF.startX += 0.5f;
+                    updateBEAndRefreshBE();
+                    return true;
+                }
+            }
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }

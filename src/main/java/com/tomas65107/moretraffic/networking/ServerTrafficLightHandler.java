@@ -1,8 +1,7 @@
 package com.tomas65107.moretraffic.networking;
 
 import com.tomas65107.moretraffic.block.AdvancedTrafficLightBlockEntity;
-import com.tomas65107.moretraffic.data.TrafficLightLight;
-import com.tomas65107.moretraffic.mod.MoreTraffic;
+import com.tomas65107.moretraffic.core.TrafficLightLight;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;

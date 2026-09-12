@@ -174,7 +174,7 @@ configurations {
 dependencies {
 
     // TrafficCraft dependency (required)
-    implementation "curse.maven:trafficcraft-852322:7754967"
+    implementation "curse.maven:trafficcraft-852322:8808425"
     implementation "curse.maven:dragonlib-946163:7763966"
 
     implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }

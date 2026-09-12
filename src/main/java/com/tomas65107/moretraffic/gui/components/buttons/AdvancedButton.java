@@ -1,6 +1,6 @@
 package com.tomas65107.moretraffic.gui.components.buttons;
 
-import com.tomas65107.moretraffic.data.SpritesManager;
+import com.tomas65107.moretraffic.core.SpritesManager;
 import com.tomas65107.moretraffic.helpers.TextHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,6 +18,7 @@ public class AdvancedButton extends Button {
     private final ResourceLocation pictogram;
     public TooltipComponent tooltipComponent;
     private final boolean hideBackgroundButton;
+    private boolean centerText;
 
     public static final int NORMAL_HEIGHT = 20;
 
@@ -45,6 +46,11 @@ public class AdvancedButton extends Button {
         this.hideBackgroundButton = hideButtonBackground;
     }
 
+    public AdvancedButton setCenterText(boolean bool) {
+        centerText = bool;
+        return this;
+    }
+
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (!hideBackgroundButton) {
@@ -65,7 +71,18 @@ public class AdvancedButton extends Button {
             SpritesManager.renderSprite(guiGraphics, pictogram, getX() + 2, getY() + 2);
         }
         if (component != null) {
-            TextHelper.renderText(guiGraphics, getX() + (pictogram != null ? (2 + 16 + 2 + 2) : 6), getY() + 6, component);
+            TextHelper.renderText(
+                    guiGraphics,
+                    getX() + (
+                            pictogram != null
+                                    ? (2 + 16 + 2 + 2)
+                                    : (centerText
+                                    ? (getWidth() - Minecraft.getInstance().font.width(component)) / 2
+                                    : 6)
+                    ),
+                    getY() + 6,
+                    component
+            );
         }
 
         if (tooltipComponent != null && isHovered()) {

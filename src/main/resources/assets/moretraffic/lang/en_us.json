@@ -67,6 +67,8 @@
   "block.moretraffic.signboard.tooltip.summary": "Signboard can display _custom text and background_ with support for customization.",
   "block.moretraffic.signboard.tooltip.condition1": "When R-Clicked with Wrench",
   "block.moretraffic.signboard.tooltip.behaviour1": "Opens configuration gui.",
+  "block.moretraffic.signboard.tooltip.condition2": "When R-Clicked with Create Clipboard",
+  "block.moretraffic.signboard.tooltip.behaviour2": "_Copies_ the data of the Signboard, by _left clicking the clipboard_ on another Signboard",
 
   "block.moretraffic.traffic_pillar.tooltip.summary": "_Thicker version_ for the Traffic Craft's Traffic sign post!",
   "block.moretraffic.traffic_pillar.tooltip.condition1": "When R-Clicked with Wrench",
@@ -172,7 +174,7 @@
 
   "gui.moretraffic.signboard.title": "Signboard Configuration",
   "gui.moretraffic.signboard_oobe.title": "Size of Signboard",
-  "gui.moretraffic.signboard.message": "Signboard can be _placed down_ and display custom colored and styled text and background with support for customization. Layers can be reordered, and are rendered from top to bottom.\nMore things coming soon.",
+  "gui.moretraffic.signboard.message": " Signboard can be placed down and display custom colored and styled text with support for customization.\n Layers can be reordered, and are rendered from top to bottom.\n Click on a element to edit it, you can move the element by editing position as well as using arrow keys",
   "gui.moretraffic.signboard.plus": "Add element...",
   "gui.moretraffic.signboard.element.delete": "Delete element",
   "gui.moretraffic.signboard.element.move": "Move element up",
@@ -182,6 +184,9 @@
   "gui.moretraffic.signboard.element.duplicate": "Duplicate",
   "gui.moretraffic.signboard.none_selected": "Currently, no element selected.\nClick on any layer on the right bar to edit it!",
   "gui.moretraffic.signboard.export_all": "Export will contain all info.",
+  "gui.moretraffic.signboard.quick_actions.title": "Quick edit actions",
+  "gui.moretraffic.signboard.quick_actions.warning": "Using quick edit actions will apply them to the whole text!",
+  "gui.moretraffic.signboard.quick_actions.message": "To edit letter by letter, use JSON syntax. You can use online generators",
 
   "moretraffic.commands.copypos.success": "Copied %s to clipboard",
   "moretraffic.commands.copypos.error": "Failed to get coordinates",

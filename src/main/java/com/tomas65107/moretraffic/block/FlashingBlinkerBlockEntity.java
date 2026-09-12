@@ -1,6 +1,6 @@
 package com.tomas65107.moretraffic.block;
 
-import com.tomas65107.moretraffic.data.ICabinetPulsable;
+import com.tomas65107.moretraffic.core.ICabinetPulsable;
 import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;

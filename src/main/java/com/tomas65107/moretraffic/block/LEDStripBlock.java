@@ -1,9 +1,7 @@
 package com.tomas65107.moretraffic.block;
 
-import com.mojang.serialization.MapCodec;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
-import com.tomas65107.moretraffic.data.ISimpleBlockProperties;
-import com.tomas65107.moretraffic.data.blocktypes.MTNormalBlock;
+import com.tomas65107.moretraffic.core.blocktypes.MTNormalBlock;
 import com.tomas65107.moretraffic.gui.containers.LEDStripMenu;
 import com.tomas65107.moretraffic.mod.registration.MTRegistrate;
 import net.minecraft.core.BlockPos;
@@ -13,13 +11,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,7 +37,7 @@ public class LEDStripBlock extends MTNormalBlock implements EntityBlock, IWrench
     public static final IntegerProperty LIGHT_LEVEL = IntegerProperty.create("light_level", 0, 15);
 
     public LEDStripBlock(Properties properties) {
-        super(ISimpleBlockProperties.set(properties.lightLevel(state -> state.getValue(LIGHT_LEVEL)), SoundType.METAL, MapColor.NONE, ISimpleBlockProperties.Material.MODEL_NORMAL), FACING, null, PickaxeItem.class);
+        super(properties.lightLevel(state -> state.getValue(LIGHT_LEVEL)),FACING, null);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.tomas65107.moretraffic.gui.tooltip;
 
-import com.tomas65107.moretraffic.data.ColorsManager;
-import com.tomas65107.moretraffic.data.SpritesManager;
+import com.tomas65107.moretraffic.core.ColorsManager;
+import com.tomas65107.moretraffic.core.SpritesManager;
 import com.tomas65107.moretraffic.helpers.TextHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -14,7 +14,9 @@ import java.awt.*;
 import java.util.List;
 import java.util.Objects;
 
+import static com.tomas65107.moretraffic.core.ColorsManager.SECONDARY;
 import static com.tomas65107.moretraffic.helpers.ColorHelper.rgb;
+import static com.tomas65107.moretraffic.helpers.ColorHelper.withAlpha;
 import static com.tomas65107.moretraffic.helpers.TextCutter.cutTextComponent;
 
 public class NoticeBoxTooltip implements TooltipComponent {
@@ -103,7 +105,8 @@ public class NoticeBoxTooltip implements TooltipComponent {
                 scaleForTs = 1f;
                 for (Component line : tooltip.message) {
                     if (gfx instanceof GuiGraphics) {
-                        TextHelper.renderText((GuiGraphics) gfx, x, (int) (y + yTotal), line, scaleForTs, rgb(ColorsManager.SECONDARY), true);
+                        TextHelper.renderText((GuiGraphics) gfx, x, (int) (y + yTotal), line, scaleForTs, rgb(SECONDARY), true);
+                        if (!color.equals(ColorsManager.PRIMARY)) TextHelper.renderText((GuiGraphics) gfx, x, (int) (y + yTotal), line, scaleForTs, withAlpha(rgb(color), 50), true);
                     }
                     yTotal += Minecraft.getInstance().font.lineHeight * scaleForTs;
                     xTotal = (int) Math.max(xTotal, Minecraft.getInstance().font.width(line) * scaleForTs);

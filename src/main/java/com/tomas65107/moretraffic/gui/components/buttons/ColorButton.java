@@ -1,6 +1,6 @@
 package com.tomas65107.moretraffic.gui.components.buttons;
 
-import com.tomas65107.moretraffic.data.ColorsManager;
+import com.tomas65107.moretraffic.core.ColorsManager;
 import com.tomas65107.moretraffic.helpers.TextHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

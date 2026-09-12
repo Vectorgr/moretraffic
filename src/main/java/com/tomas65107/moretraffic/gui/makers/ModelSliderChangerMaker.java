@@ -1,7 +1,7 @@
 package com.tomas65107.moretraffic.gui.makers;
 
 import com.tomas65107.moretraffic.block.AdvancedTrafficLightBlockEntity;
-import com.tomas65107.moretraffic.data.trafficlightproperties.TrafficLightProperty;
+import com.tomas65107.moretraffic.core.trafficlightproperties.TrafficLightProperty;
 import com.tomas65107.moretraffic.gui.components.buttons.ModelButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.world.level.block.state.BlockState;

@@ -1,10 +1,7 @@
 package com.tomas65107.moretraffic.gui.components;
 
-import com.mojang.blaze3d.platform.Window;
-import com.tomas65107.moretraffic.gui.AbstractTomiContainerScreen;
 import com.tomas65107.moretraffic.gui.components.overriderenders.PriorityWidget;
 import com.tomas65107.moretraffic.helpers.ClientScheduler;
-import com.tomas65107.moretraffic.mod.MoreTraffic;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -19,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static com.tomas65107.moretraffic.data.ColorsManager.PRIMARY;
+import static com.tomas65107.moretraffic.core.ColorsManager.PRIMARY;
 import static com.tomas65107.moretraffic.helpers.ColorHelper.rgb;
 
 public class BetterEditBox extends EditBox {
@@ -56,12 +53,6 @@ public class BetterEditBox extends EditBox {
             guiGraphics.renderTooltip(Minecraft.getInstance().font, List.of(Component.empty()), Optional.of(floatingTooltip), ItemStack.EMPTY, getX()-9, getY() + getHeight() + 18);
         }
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-
-//        var original = Minecraft.getInstance().screen.getFocused();
-//        if (original instanceof PriorityWidget<?> p) original = p.getOriginal();
-//        if (original instanceof BetterEditBox focusingBox) {
-//            System.out.println(focusingBox.getValue());
-//        }
     }
 
     @Override

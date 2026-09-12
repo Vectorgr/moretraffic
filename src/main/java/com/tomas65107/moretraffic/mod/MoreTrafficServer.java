@@ -33,10 +33,10 @@ public class MoreTrafficServer {
         if (event.getHand() != InteractionHand.MAIN_HAND) return;
         Level level = event.getLevel();
         BlockPos pos = event.getPos();
-        Player player = event.getEntity();
         BlockState state = level.getBlockState(pos);
 
         if ((state.getBlock() instanceof TrafficSignPostBlock || state.getBlock() instanceof AdvancedTrafficLightBlock)) {
+            Player player = event.getEntity();
             if (!level.isClientSide) {
                 BlockState newState;
 
@@ -49,8 +49,8 @@ public class MoreTrafficServer {
                 boolean shouldApplyBe = false;
 
                 if (player.isShiftKeyDown()) {
-                    if (!(player.getMainHandItem().getItem() instanceof WrenchItem)) return;
-                    if (!(player.getMainHandItem().getItem() instanceof com.simibubi.create.content.equipment.wrench.WrenchItem)) return;
+                    var hand  = player.getMainHandItem().getItem();
+                    if (!(hand instanceof WrenchItem || hand instanceof com.simibubi.create.content.equipment.wrench.WrenchItem)) return;
 
                     if (state.getBlock() == MTRegistrate.ADV_1_TRAFFIC_LIGHT.get()) {
                         newState = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("trafficcraft", "traffic_sign_post")).defaultBlockState();

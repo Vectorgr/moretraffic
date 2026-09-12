@@ -1,12 +1,11 @@
 package com.tomas65107.moretraffic.block;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
-import com.tomas65107.moretraffic.data.ISimpleBlockProperties;
-import com.tomas65107.moretraffic.data.blocktypes.MTNormalBlock;
-import com.tomas65107.moretraffic.gui.containers.LEDStripMenu;
+import com.tomas65107.moretraffic.core.blocktypes.MTNormalBlock;
 import com.tomas65107.moretraffic.gui.containers.SignboardMenu;
 import com.tomas65107.moretraffic.mod.registration.MTRegistrate;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -15,20 +14,19 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DirectionalBlock;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
@@ -41,24 +39,7 @@ public class SignboardBlock extends MTNormalBlock implements IWrenchable, Entity
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
 
     public SignboardBlock(@NotNull Properties properties) {
-        super(ISimpleBlockProperties.set(properties, SoundType.BASALT, MapColor.NONE, Material.MODEL_NORMAL), FACING, SIGNBOARD, PickaxeItem.class);
-    }
-
-    @Override
-    public void setPlacedBy(
-            Level level,
-            BlockPos pos,
-            BlockState state,
-            LivingEntity placer,
-            ItemStack stack
-    ) {
-        super.setPlacedBy(level, pos, state, placer, stack);
-
-        if (!level.isClientSide && placer instanceof ServerPlayer serverPlayer) {
-            serverPlayer.openMenu(new SimpleMenuProvider(
-                    (id, inventory, p) -> new SignboardMenu(id, inventory, pos), Component.empty()
-            ), buf -> buf.writeBlockPos(pos));
-        }
+        super(properties, FACING, SIGNBOARD);
     }
 
     @Override
@@ -76,14 +57,37 @@ public class SignboardBlock extends MTNormalBlock implements IWrenchable, Entity
 
 
     @Override
+    public @NotNull VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return Shapes.empty();
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        if (!state.canSurvive(level, pos)) return Blocks.AIR.defaultBlockState();
+
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+    }
+
+    @Override
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return Shapes.empty();
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState()
-                .setValue(FACING, context.getClickedFace());
+
+        if (this.defaultBlockState().setValue(FACING, context.getClickedFace()).canSurvive(context.getLevel(), context.getClickedPos())) {
+            return this.defaultBlockState().setValue(FACING, context.getClickedFace());
+        }
+
+        return null;
+    }
+
+    @Override
+    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        Direction facing = state.getValue(FACING);
+
+        return canSupportCenter(level, pos.relative(facing.getOpposite()), facing);
     }
 
     @Override

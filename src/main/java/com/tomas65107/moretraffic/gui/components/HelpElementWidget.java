@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Optional;
 
-import static com.tomas65107.moretraffic.data.SpritesManager.renderSprite;
+import static com.tomas65107.moretraffic.core.SpritesManager.renderSprite;
 
 public class HelpElementWidget extends AbstractWidget {
 

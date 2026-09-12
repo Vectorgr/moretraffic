@@ -110,4 +110,14 @@ public class HelperFunctions {
 
         return result.get();
     }
+
+    public static String ff(float value) {
+        return value % 1 == 0
+                ? Integer.toString((int) value)
+                : Float.toString(value);
+    }
+
+    public static float roundUpToSupportedDigits(float num) {
+        return Math.round(num * 4) / 4.0f;
+    }
 }

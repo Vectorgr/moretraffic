@@ -5,7 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import static com.tomas65107.moretraffic.helpers.ColorHelper.rgb;
-import static com.tomas65107.moretraffic.data.ColorsManager.TERTIARY;
+import static com.tomas65107.moretraffic.core.ColorsManager.TERTIARY;
 
 public final class TextHelper {
 

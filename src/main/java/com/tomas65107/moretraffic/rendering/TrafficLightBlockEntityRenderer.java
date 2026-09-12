@@ -2,7 +2,7 @@ package com.tomas65107.moretraffic.rendering;
 
 import com.tomas65107.moretraffic.block.AdvancedTrafficLightBlock;
 import com.tomas65107.moretraffic.block.AdvancedTrafficLightBlockEntity;
-import com.tomas65107.moretraffic.data.TrafficLightLight;
+import com.tomas65107.moretraffic.core.TrafficLightLight;
 import com.tomas65107.moretraffic.mod.registration.MTRegistrate;
 import com.tomas65107.moretraffic.rendering.helpers.LegacyCube;
 import de.mrjulsen.mcdragonlib.client.ber.BERGraphics;
@@ -17,7 +17,7 @@ import net.minecraft.world.phys.Vec2;
 import java.awt.*;
 
 import static com.tomas65107.moretraffic.helpers.ColorHelper.rgb;
-import static com.tomas65107.moretraffic.data.trafficlightproperties.TrafficLightPosition.BOTTOM;
+import static com.tomas65107.moretraffic.core.trafficlightproperties.TrafficLightPosition.BOTTOM;
 import static com.tomas65107.moretraffic.rendering.MaterialValues.*;
 
 public class TrafficLightBlockEntityRenderer extends RotatableBlockEntityRenderer<AdvancedTrafficLightBlockEntity> {

@@ -9,6 +9,7 @@ import com.tomas65107.moretraffic.gui.containers.LightControlCabinetScreen;
 import com.tomas65107.moretraffic.gui.tooltip.BodyTooltip;
 import com.tomas65107.moretraffic.gui.tooltip.NoticeBoxTooltip;
 import com.tomas65107.moretraffic.mod.ponder.ModPonderPlugin;
+import com.tomas65107.moretraffic.mod.registration.ClientCommands;
 import com.tomas65107.moretraffic.mod.registration.MTPartials;
 import com.tomas65107.moretraffic.rendering.*;
 import net.neoforged.neoforge.client.event.ClientTickEvent;

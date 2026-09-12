@@ -1,6 +1,5 @@
 package com.tomas65107.moretraffic.block;
 
-import com.tomas65107.moretraffic.data.ISimpleBlockProperties;
 import com.tomas65107.moretraffic.gui.containers.LightControlCabinetMenu;
 import com.tomas65107.moretraffic.mod.registration.MTRegistrate;
 import net.minecraft.core.BlockPos;
@@ -11,9 +10,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -26,16 +23,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class LightControlCabinetBlock extends Block implements EntityBlock {
     public LightControlCabinetBlock(Properties properties) {
-        super(ISimpleBlockProperties.set(properties, SoundType.NETHERITE_BLOCK, MapColor.METAL, ISimpleBlockProperties.Material.FULLBLOCK_TOUGH));
+        super(properties);
     }
 
     @Override
@@ -50,20 +43,6 @@ public class LightControlCabinetBlock extends Block implements EntityBlock {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(FACING);
-    }
-
-    @Override
-    public float getDestroyProgress(@NotNull BlockState state, Player player, @NotNull BlockGetter world, @NotNull BlockPos pos) {
-        var item = player.getMainHandItem().getItem();
-        if (item instanceof PickaxeItem pickaxe) {
-            return pickaxe.getTier().getSpeed() / 70;
-        }
-        return super.getDestroyProgress(state, player, world, pos);
-    }
-
-    @Override
-    protected @NotNull List<ItemStack> getDrops(BlockState state, LootParams.@NotNull Builder params) {
-        return List.of(state.getBlock().asItem().getDefaultInstance());
     }
 
     @Override

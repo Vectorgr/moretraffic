@@ -1,18 +1,16 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "   ",
-    " T ",
-    " C "
-  ],
-  "key": {
-    "T": {
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
       "item": "trafficcraft:traffic_sign_post"
     },
-    "C": {
-      "item": "trafficcraft:concrete"
+    {
+      "item": "trafficcraft:traffic_sign_post"
+    },
+    {
+      "item": "trafficcraft:traffic_sign_post"
     }
-  },
+  ],
   "result": {
     "id": "moretraffic:traffic_pillar",
     "count": 1

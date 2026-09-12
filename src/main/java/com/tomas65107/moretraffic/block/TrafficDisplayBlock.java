@@ -1,13 +1,9 @@
 package com.tomas65107.moretraffic.block;
 
 import com.mojang.serialization.MapCodec;
-import com.tomas65107.moretraffic.data.ISimpleBlockProperties;
 import com.tomas65107.moretraffic.mod.registration.MTRegistrate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
@@ -16,13 +12,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 import static com.tomas65107.moretraffic.helpers.HelperFunctions.rotateShape;
 import static com.tomas65107.moretraffic.rendering.BlockBoundingBoxes.traffic_display;
@@ -34,23 +27,9 @@ public class TrafficDisplayBlock extends Block implements EntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
     public TrafficDisplayBlock(Properties properties) {
-        super(ISimpleBlockProperties.set(properties, SoundType.METAL, MapColor.TERRACOTTA_BLACK, ISimpleBlockProperties.Material.MODEL_TOUGH));
+        super(properties);
     }
 
-
-    @Override
-    protected @NotNull List<ItemStack> getDrops(BlockState state, LootParams.@NotNull Builder params) {
-        return List.of(state.getBlock().asItem().getDefaultInstance());
-    }
-
-    @Override
-    public float getDestroyProgress(@NotNull BlockState state, Player player, @NotNull BlockGetter world, @NotNull BlockPos pos) {
-        var item = player.getMainHandItem().getItem();
-        if (item instanceof PickaxeItem pickaxe) {
-            return pickaxe.getTier().getSpeed() / 70;
-        }
-        return super.getDestroyProgress(state, player, world, pos);
-    }
 
     @Override public @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {return rotateShape(state.getValue(FACING), traffic_display);}
     @Override public @NotNull VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {return rotateShape(state.getValue(FACING), traffic_display);}

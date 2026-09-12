@@ -1,8 +1,8 @@
 package com.tomas65107.moretraffic.block;
 
-import com.tomas65107.moretraffic.data.TrafficDisplayPixels;
-import com.tomas65107.moretraffic.data.TrafficLightGroup;
-import com.tomas65107.moretraffic.data.lightinstructions.*;
+import com.tomas65107.moretraffic.core.TrafficDisplayPixels;
+import com.tomas65107.moretraffic.core.TrafficLightGroup;
+import com.tomas65107.moretraffic.core.lightinstructions.*;
 import com.tomas65107.moretraffic.gui.containers.LightControlCabinetMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tomas65107.moretraffic.data.lightinstructions.LightInstructionProperty.PropertyTypes.*;
+import static com.tomas65107.moretraffic.core.lightinstructions.LightInstructionProperty.PropertyTypes.*;
 
 public class LightControlCabinetBlockEntity extends BlockEntity implements MenuProvider {
 

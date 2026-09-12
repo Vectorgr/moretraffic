@@ -1,6 +1,6 @@
 package com.tomas65107.moretraffic.block;
 
-import com.tomas65107.moretraffic.data.TrafficDisplayPixels;
+import com.tomas65107.moretraffic.core.TrafficDisplayPixels;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import static com.tomas65107.moretraffic.data.TrafficDisplayPixels.deserialize;
+import static com.tomas65107.moretraffic.core.TrafficDisplayPixels.deserialize;
 
 public class TrafficDisplayBlockEntity extends BlockEntity {
 

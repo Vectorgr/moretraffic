@@ -1,13 +1,12 @@
 package com.tomas65107.moretraffic.block;
 
-import com.tomas65107.moretraffic.data.ISimpleBlockProperties;
+import com.tomas65107.moretraffic.core.blocktypes.MTNormalBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -17,14 +16,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 import static com.tomas65107.moretraffic.helpers.HelperFunctions.rotateShape;
 import static com.tomas65107.moretraffic.rendering.BlockBoundingBoxes.*;
@@ -35,21 +31,7 @@ public class TrafficTrussBlock extends Block {
     public static final BooleanProperty WALKWAY = BooleanProperty.create("walkway");
 
     public TrafficTrussBlock(Properties properties) {
-        super(ISimpleBlockProperties.set(properties, SoundType.STONE, MapColor.COLOR_LIGHT_GRAY, ISimpleBlockProperties.Material.MODEL_TOUGH));
-    }
-
-    @Override
-    protected @NotNull List<ItemStack> getDrops(BlockState state, LootParams.@NotNull Builder params) {
-        return List.of(state.getBlock().asItem().getDefaultInstance());
-    }
-
-    @Override
-    public float getDestroyProgress(@NotNull BlockState state, Player player, @NotNull BlockGetter world, @NotNull BlockPos pos) {
-        var item = player.getMainHandItem().getItem();
-        if (item instanceof PickaxeItem pickaxe) {
-            return pickaxe.getTier().getSpeed() / 70;
-        }
-        return super.getDestroyProgress(state, player, world, pos);
+        super(properties);
     }
 
     @Override

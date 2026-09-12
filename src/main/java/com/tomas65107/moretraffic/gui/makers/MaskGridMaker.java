@@ -1,8 +1,7 @@
 package com.tomas65107.moretraffic.gui.makers;
 
-import com.tomas65107.moretraffic.data.TrafficLightLight;
+import com.tomas65107.moretraffic.core.TrafficLightLight;
 import com.tomas65107.moretraffic.gui.components.buttons.PixelButton;
-import com.tomas65107.moretraffic.mod.MoreTraffic;
 import net.minecraft.client.gui.components.AbstractWidget;
 
 import java.util.Arrays;

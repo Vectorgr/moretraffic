@@ -34,7 +34,7 @@ public final class GridMaker {
                     gridX, gridY,
                     16, 16,
                     color.getTextureDiffuseColor(),
-                    b -> onColorSelected.accept(color), currentlySelectedColor.equals(color),
+                    b -> onColorSelected.accept(color), currentlySelectedColor == null ? false : currentlySelectedColor.equals(color),
                     showBlackMinimized
             );
             addToRender.accept(button);

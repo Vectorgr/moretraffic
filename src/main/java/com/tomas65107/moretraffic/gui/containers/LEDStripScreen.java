@@ -2,8 +2,8 @@ package com.tomas65107.moretraffic.gui.containers;
 
 import com.tomas65107.moretraffic.block.LEDStripBlock;
 import com.tomas65107.moretraffic.block.LEDStripBlockEntity;
-import com.tomas65107.moretraffic.data.AbstractSheet;
-import com.tomas65107.moretraffic.data.SpritesManager;
+import com.tomas65107.moretraffic.core.AbstractSheet;
+import com.tomas65107.moretraffic.core.SpritesManager;
 import com.tomas65107.moretraffic.gui.AbstractTomiContainerScreen;
 import com.tomas65107.moretraffic.gui.components.BetterEditBox;
 import com.tomas65107.moretraffic.gui.components.HelpElementWidget;
@@ -29,8 +29,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-import static com.tomas65107.moretraffic.data.ColorsManager.*;
-import static com.tomas65107.moretraffic.data.SpritesManager.INFO;
+import static com.tomas65107.moretraffic.core.ColorsManager.*;
+import static com.tomas65107.moretraffic.core.SpritesManager.INFO;
 import static com.tomas65107.moretraffic.helpers.ColorHelper.rgb;
 import static net.neoforged.neoforge.network.PacketDistributor.sendToServer;
 

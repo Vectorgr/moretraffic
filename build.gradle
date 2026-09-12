@@ -16,24 +16,32 @@ tasks.configureEach {
     }
 }
 
-def mod_version = "0.2.6-beta"
+def mod_version = "0.2.7-beta"
 
 def mod_changelog = """
-### 0.2.6-beta
-> ⚠️ Important changes:
-> Recent update introduced changes regarding Signboard position. This may visually break some placed signboards.
+### 0.2.7-beta
 
-Added:
-- New Block "Exposed Concrete" with variants.
-- You can now copy and duplicate elements in Signboard
+**Additions**
+- Added quick text formatting to Signboard UI actions for bold, italic, underline, colors... and generally improved the UI
+- Added Signboard text centering
+- Added Signboard arrow-key movement for precise signboard element positioning.
+- Added Create Clipboard support for copying and pasting complete signboard configurations.
 
-Fixes and changes:
-- Signboards are now centered on block.
-- You can customize size of signboards' backgrounds and background must be a first element.
-- Finally changed all saving/mouse focusing issues.
-- Fixed issues with how Signboards render elements
-- Fixed a LED Strip bug that allowed you to place them fully out of block and prevent them from being broken.
-- Remade recipes so they are a little bit more reasonable.
+**Changes**
+- Updated NeoForge to 21.1.247 and Create to 6.0.10-247.
+- Changed signboard's element's point precision bigger (int -> float 0.25)
+- Improved block collision handling for truss-like structures.
+- Made signboards have proper Hitbox and also they break when their supporting block gets removed
+
+**Fixes**
+- Fixed a bug that blocks were slowly mined and enchantments were ignored by adding a proper DataGen capabilities.
+- Fixed elements that were rendering even outside bounds for Signboard BE
+- Fixed a bug for Advanced Traffic Light that did not allow individual lights to be removed by a wrench (PR)
+- Fixed unsupported signboard positions being accepted by the parser.
+- Removed JEI rendering overlay rendering in GUIs while being hidden
+- Improved block registration and datagen handling.
+
+As always, please back-up your worlds as a precaution.
 """
 
 version = mod_version
@@ -174,7 +182,7 @@ configurations {
 dependencies {
 
     // TrafficCraft dependency (required)
-    implementation "curse.maven:trafficcraft-852322:7754967"
+    implementation "curse.maven:trafficcraft-852322:8808425"
     implementation "curse.maven:dragonlib-946163:7763966"
 
     implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }

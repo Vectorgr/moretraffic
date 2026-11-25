@@ -12,7 +12,8 @@ public class ModPonderScenes {
         PonderSceneRegistrationHelper<ItemProviderEntry<?, ?>> HELPER = helper.withKeyFunction(RegistryEntry::getId);
 
         HELPER.forComponents(MTRegistrate.LIGHT_CONTROL_CABINET)
-                .addStoryBoard("cabinet_1", ControlCabinetScenes::scene1, AllCreatePonderTags.REDSTONE);
+                .addStoryBoard("cabinet_1", ControlCabinetScenes::scene1, AllCreatePonderTags.REDSTONE)
+                .addStoryBoard("cabinet_1", ControlCabinetScenes::trainSignalScene, AllCreatePonderTags.REDSTONE);
 
 //        HELPER.forComponents(MTRegistrate.DERAILER)
 //                .addStoryBoard("derailer_1", DerailerScenes::scene1, AllCreatePonderTags.TRAIN_RELATED);

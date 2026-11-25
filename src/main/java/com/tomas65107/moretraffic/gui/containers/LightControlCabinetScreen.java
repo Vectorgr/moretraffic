@@ -119,6 +119,7 @@ public class LightControlCabinetScreen extends AbstractTomiContainerScreen<Light
                         case Delay d -> 0;
                         case ModifyLight m -> 1;
                         case AwaitRedstone a -> 2;
+                        case AwaitTrainSignal a -> 2;
                         case ModifyDisplay m -> 3;
                         case SendPulse s -> 4;
                     };
@@ -598,7 +599,7 @@ public class LightControlCabinetScreen extends AbstractTomiContainerScreen<Light
 
         addBaseWidget(new AdvancedButton(guiX+76+25, guiY+224, 15, 15, SpritesManager.PLUS, new NoticeBoxTooltip(Component.translatable("gui.moretraffic.control_cabinet.plus")), true, b->{
             int sheetWidth = 150;
-            int sheetHeight = 170;
+            int sheetHeight = 216;
 
             int sheetX = guiX + (guiWidth - sheetWidth) / 2;
             int sheetY = guiY + (guiHeight - sheetHeight) / 2;

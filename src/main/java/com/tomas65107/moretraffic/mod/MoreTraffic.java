@@ -59,5 +59,6 @@ public class MoreTraffic {
     private void commonSetup(FMLCommonSetupEvent event) {
         LOGGER.info("MoreTraffic commonSetup");
         LOGGER.warn("\nMORETRAFFIC IS IN ALPHA\nSome things are not finished and things may crash or break.\nPlease PLEASE make sure you backup any important worlds, you are responsible for corruption.\nMod is in early stage of development");
+        event.enqueueWork(MoreTrafficCompat::registerDisplayLinkBehaviours);
     }
 }

@@ -1,5 +1,7 @@
 package com.tomas65107.moretraffic.mod.registration;
 
+import com.simibubi.create.api.behaviour.display.DisplaySource;
+import com.simibubi.create.api.behaviour.display.DisplayTarget;
 import com.simibubi.create.content.trains.graph.EdgePointType;
 import com.simibubi.create.content.trains.track.TrackTargetingBlockItem;
 import com.simibubi.create.foundation.data.CreateRegistrate;
@@ -8,11 +10,14 @@ import com.simibubi.create.foundation.item.TooltipModifier;
 import com.tomas65107.moretraffic.block.*;
 import com.tomas65107.moretraffic.core.blocktypes.MTBaseColoredBlockEntity;
 import com.tomas65107.moretraffic.mod.MoreTraffic;
+import com.tomas65107.moretraffic.mod.compat.displaylink.CabinetDisplayTarget;
+import com.tomas65107.moretraffic.mod.compat.displaylink.SignalOccupancyDisplaySource;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import net.createmod.catnip.lang.FontHelper;
 import net.minecraft.core.registries.Registries;
@@ -273,6 +278,13 @@ public class MTRegistrate {
     public static final BlockEntityEntry<SignboardBlockEntity> SIGNSBOARD_BE = REGISTRATE
             .blockEntity("signboard", SignboardBlockEntity::new)
             .validBlock(SIGNSBOARD)
+            .register();
+
+    public static final RegistryEntry<DisplaySource, SignalOccupancyDisplaySource> SIGNAL_OCCUPANCY_SOURCE = REGISTRATE
+            .displaySource("signal_occupancy", SignalOccupancyDisplaySource::new)
+            .register();
+    public static final RegistryEntry<DisplayTarget, CabinetDisplayTarget> CABINET_DISPLAY_TARGET = REGISTRATE
+            .displayTarget("control_cabinet", CabinetDisplayTarget::new)
             .register();
 
     public static void register(IEventBus modEventBus) {

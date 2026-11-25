@@ -7,7 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 
-public sealed interface LightInstructionProperty permits AwaitRedstone, Delay, ModifyDisplay, ModifyLight, SendPulse {
+public sealed interface LightInstructionProperty permits AwaitRedstone, AwaitTrainSignal, Delay, ModifyDisplay, ModifyLight, SendPulse {
 
     enum PropertyTypes {
         DELAY {
@@ -28,6 +28,18 @@ public sealed interface LightInstructionProperty permits AwaitRedstone, Delay, M
                 return new AwaitRedstone(0);
             }
         },
+        AWAIT_TRAIN_SIGNAL_ON {
+            @Override
+            public LightInstructionProperty create() {
+                return new AwaitTrainSignal(true);
+            }
+        },
+        AWAIT_TRAIN_SIGNAL_OFF {
+            @Override
+            public LightInstructionProperty create() {
+                return new AwaitTrainSignal(false);
+            }
+        },
         MODIFY_DISPLAY {
             @Override
             public LightInstructionProperty create() {
@@ -46,6 +58,8 @@ public sealed interface LightInstructionProperty permits AwaitRedstone, Delay, M
         public String getNameOfProperty() {
             return switch(this) {
                 case AWAIT_REDSTONE -> "AwaitRedstone";
+                case AWAIT_TRAIN_SIGNAL_ON -> "AwaitTrainSignalOn";
+                case AWAIT_TRAIN_SIGNAL_OFF -> "AwaitTrainSignalOff";
                 case DELAY -> "Delay";
                 case MODIFY_LIGHT -> "ModifyLight";
                 case MODIFY_DISPLAY -> "ModifyDisplay";
@@ -56,6 +70,8 @@ public sealed interface LightInstructionProperty permits AwaitRedstone, Delay, M
         public Component getComponentOfProperty(boolean getMessage) {
             return switch(this) {
                 case AWAIT_REDSTONE -> Component.translatable("gui.moretraffic.control_cabinet.instruction.await_redstone" + (getMessage ? ".message" : ""));
+                case AWAIT_TRAIN_SIGNAL_ON -> Component.translatable("gui.moretraffic.control_cabinet.instruction.await_train_signal_on" + (getMessage ? ".message" : ""));
+                case AWAIT_TRAIN_SIGNAL_OFF -> Component.translatable("gui.moretraffic.control_cabinet.instruction.await_train_signal_off" + (getMessage ? ".message" : ""));
                 case DELAY -> Component.translatable("gui.moretraffic.control_cabinet.instruction.delay" + (getMessage ? ".message" : ""));
                 case MODIFY_LIGHT -> Component.translatable("gui.moretraffic.control_cabinet.instruction.modify_light" + (getMessage ? ".message" : ""));
                 case MODIFY_DISPLAY -> Component.translatable("gui.moretraffic.control_cabinet.instruction.modify_display" + (getMessage ? ".message" : ""));
@@ -66,6 +82,8 @@ public sealed interface LightInstructionProperty permits AwaitRedstone, Delay, M
         public static PropertyTypes getPropertyOfName(String name) {
             return switch(name) {
                 case "AwaitRedstone" -> AWAIT_REDSTONE;
+                case "AwaitTrainSignalOn" -> AWAIT_TRAIN_SIGNAL_ON;
+                case "AwaitTrainSignalOff" -> AWAIT_TRAIN_SIGNAL_OFF;
                 case "Delay" -> DELAY;
                 case "ModifyLight" -> MODIFY_LIGHT;
                 case "ModifyDisplay" -> MODIFY_DISPLAY;
@@ -77,6 +95,7 @@ public sealed interface LightInstructionProperty permits AwaitRedstone, Delay, M
         public Class getClassOfProperty() {
             return switch(this) {
                 case AWAIT_REDSTONE -> AwaitRedstone.class;
+                case AWAIT_TRAIN_SIGNAL_ON, AWAIT_TRAIN_SIGNAL_OFF -> AwaitTrainSignal.class;
                 case DELAY -> Delay.class;
                 case MODIFY_LIGHT -> ModifyLight.class;
                 case MODIFY_DISPLAY -> ModifyDisplay.class;

@@ -1,9 +1,13 @@
 package com.tomas65107.moretraffic.block;
 
+import com.simibubi.create.content.redstone.displayLink.DisplayLinkBlock;
+import com.simibubi.create.content.redstone.displayLink.DisplayLinkBlockEntity;
+import com.simibubi.create.content.trains.signal.SignalBlockEntity;
 import com.tomas65107.moretraffic.core.TrafficDisplayPixels;
 import com.tomas65107.moretraffic.core.TrafficLightGroup;
 import com.tomas65107.moretraffic.core.lightinstructions.*;
 import com.tomas65107.moretraffic.gui.containers.LightControlCabinetMenu;
+import com.tomas65107.moretraffic.mod.compat.displaylink.SignalOccupancyDisplaySource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +30,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.tomas65107.moretraffic.core.lightinstructions.LightInstructionProperty.PropertyTypes.*;
 
@@ -39,6 +46,8 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
     public boolean shouldLoop;
     public List<TrafficLightGroup> groups = new ArrayList<>();
     public List<LightInstructionProperty> instructions = new ArrayList<>();
+    //Display Link position -> whether the train signal it reads was last seen red
+    private final Map<BlockPos, Boolean> signalLinks = new LinkedHashMap<>();
 
     public LightControlCabinetBlockEntity(BlockEntityType type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -93,6 +102,10 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
                             TrafficDisplayPixels.deserialize(nbtInstruction.getString("TrafficDisplayPixels"))
                     );
 
+                    case AWAIT_TRAIN_SIGNAL_ON -> new AwaitTrainSignal(true);
+
+                    case AWAIT_TRAIN_SIGNAL_OFF -> new AwaitTrainSignal(false);
+
                     case SEND_PULSE -> new SendPulse(
                             nbtInstruction.getString("Group"),
                             nbtInstruction.getBoolean("Enable")
@@ -104,6 +117,13 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
 
                 instructions.add(instruction);
             }
+        }
+
+        signalLinks.clear();
+        ListTag linksTag = tag.getList("SignalLinks", 10); // 10 = CompoundTag
+        for (int i = 0; i < linksTag.size(); i++) {
+            CompoundTag linkTag = linksTag.getCompound(i);
+            signalLinks.put(BlockPos.of(linkTag.getLong("Pos")), linkTag.getBoolean("Occupied"));
         }
 
         //groups
@@ -153,6 +173,9 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
             else if (instruction instanceof AwaitRedstone(int internalTimestamp)) {
                 entry.putInt("InternalTimestamp", internalTimestamp);
             }
+            else if (instruction instanceof AwaitTrainSignal) {
+                //the type name already stores the wanted state
+            }
             else if (instruction instanceof ModifyDisplay(String group, TrafficDisplayPixels trafficDisplayPixels)) {
                 entry.putString("Group", group);
                 entry.putString("TrafficDisplayPixels", trafficDisplayPixels.serialize());
@@ -168,6 +191,16 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
         }
 
         tag.put("Instructions", instructionsTag);
+
+        // signal links
+        ListTag linksTag = new ListTag();
+        signalLinks.forEach((linkPos, occupied) -> {
+            CompoundTag linkTag = new CompoundTag();
+            linkTag.putLong("Pos", linkPos.asLong());
+            linkTag.putBoolean("Occupied", occupied);
+            linksTag.add(linkTag);
+        });
+        tag.put("SignalLinks", linksTag);
 
         // groups
         ListTag groupsTag = new ListTag();
@@ -185,7 +218,75 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
 
     }
 
+    /** Whether at least one Display Link on a train signal is connected to this cabinet. */
+    public boolean isSignalLinked() {
+        return !signalLinks.isEmpty();
+    }
+
+    /** Whether any of the linked train signals is red. */
+    public boolean isTrainPresent() {
+        return signalLinks.containsValue(true);
+    }
+
+    public void addSignalLink(BlockPos linkPos) {
+        if (signalLinks.putIfAbsent(linkPos.immutable(), false) != null || level == null) return;
+        setChanged();
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+    }
+
+    public Map<BlockPos, Boolean> copySignalLinks() {
+        return new LinkedHashMap<>(signalLinks);
+    }
+
+    /** Used after applying a client edit, so a stale client copy cannot overwrite the server's signal state. */
+    public void restoreSignalLinks(Map<BlockPos, Boolean> links) {
+        signalLinks.clear();
+        signalLinks.putAll(links);
+    }
+
+    /**
+     * Reads the train signals behind the linked Display Links and forgets the links that no longer exist.
+     * Unloaded, redstone-disabled or not yet initialised links keep their last known value.
+     *
+     * @return true if anything changed
+     */
+    private boolean refreshSignalLinks(Level level, BlockPos pos) {
+        boolean changed = false;
+
+        Iterator<Map.Entry<BlockPos, Boolean>> iterator = signalLinks.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<BlockPos, Boolean> entry = iterator.next();
+            if (!level.isLoaded(entry.getKey())) continue;
+
+            if (!(level.getBlockEntity(entry.getKey()) instanceof DisplayLinkBlockEntity link)
+                    || !link.getTargetPosition().equals(pos)
+                    || !(link.activeSource instanceof SignalOccupancyDisplaySource)) {
+                iterator.remove();
+                changed = true;
+                continue;
+            }
+
+            if (link.getBlockState().getOptionalValue(DisplayLinkBlock.POWERED).orElse(false)) continue;
+
+            BlockPos signalPos = link.getSourcePosition();
+            if (!level.isLoaded(signalPos) || !(level.getBlockEntity(signalPos) instanceof SignalBlockEntity signal)) continue;
+
+            SignalBlockEntity.SignalState signalState = signal.getState();
+            if (signalState == SignalBlockEntity.SignalState.INVALID) continue;
+
+            boolean occupied = signalState == SignalBlockEntity.SignalState.RED;
+            if (occupied != entry.getValue()) {
+                entry.setValue(occupied);
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, LightControlCabinetBlockEntity be) {
+
+        boolean linksChanged = be.refreshSignalLinks(level, pos);
 
         //Cannot run when no instructions are added
         if (be.isRunning && be.instructions.isEmpty()) {
@@ -218,7 +319,7 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
                         be.lastInstructionFinishedTick = be.ticksSinceStart;
                         be.programStep++;
                     }
-                } else return;
+                } else if (!linksChanged) return;
 
         be.setChanged();
         level.sendBlockUpdated(pos, state, state, 3);

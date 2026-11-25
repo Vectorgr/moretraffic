@@ -15,7 +15,9 @@ public class ServerCabinetHandle {
             BlockEntity be = level.getBlockEntity(payload.pos());
 
             if (be instanceof LightControlCabinetBlockEntity cabinet && level.getBlockState(payload.pos()).is(MTRegistrate.LIGHT_CONTROL_CABINET.get())) {
+                var signalLinks = cabinet.copySignalLinks();
                 cabinet.loadAdditional(payload.tag(), level.registryAccess());
+                cabinet.restoreSignalLinks(signalLinks);
                 cabinet.setChanged();
 
                 level.sendBlockUpdated(

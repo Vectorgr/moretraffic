@@ -21,6 +21,8 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
@@ -29,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 public class LightControlCabinetBlock extends Block implements EntityBlock {
     public LightControlCabinetBlock(Properties properties) {
         super(properties);
+        registerDefaultState(defaultBlockState().setValue(LIT, false));
     }
 
     @Override
@@ -39,10 +42,13 @@ public class LightControlCabinetBlock extends Block implements EntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
+    /** Shows the red LED while the program is running. */
+    public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(FACING);
+        builder.add(FACING, LIT);
     }
 
     @Override

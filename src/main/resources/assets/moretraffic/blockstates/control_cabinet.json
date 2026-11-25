@@ -1,8 +1,12 @@
 {
   "variants": {
-    "facing=north": { "model": "moretraffic:block/light_control_cabinet", "y": 180 },
-    "facing=south": { "model": "moretraffic:block/light_control_cabinet" },
-    "facing=west":  { "model": "moretraffic:block/light_control_cabinet", "y": 90 },
-    "facing=east":  { "model": "moretraffic:block/light_control_cabinet", "y": 270 }
+    "facing=north,lit=false": { "model": "moretraffic:block/light_control_cabinet", "y": 180 },
+    "facing=south,lit=false": { "model": "moretraffic:block/light_control_cabinet" },
+    "facing=west,lit=false":  { "model": "moretraffic:block/light_control_cabinet", "y": 90 },
+    "facing=east,lit=false":  { "model": "moretraffic:block/light_control_cabinet", "y": 270 },
+    "facing=north,lit=true": { "model": "moretraffic:block/light_control_cabinet_on", "y": 180 },
+    "facing=south,lit=true": { "model": "moretraffic:block/light_control_cabinet_on" },
+    "facing=west,lit=true":  { "model": "moretraffic:block/light_control_cabinet_on", "y": 90 },
+    "facing=east,lit=true":  { "model": "moretraffic:block/light_control_cabinet_on", "y": 270 }
   }
 }

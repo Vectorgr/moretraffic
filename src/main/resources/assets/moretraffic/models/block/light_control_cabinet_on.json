@@ -1,0 +1,37 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "moretraffic:block/light_control_cabinet_side",
+    "north": "moretraffic:block/light_control_cabinet_on",
+    "side":  "moretraffic:block/light_control_cabinet_side",
+    "vertical": "moretraffic:block/light_control_cabinet_vertical"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": { "texture": "#north", "cullface": "north" },
+        "south": { "texture": "#side", "cullface": "south" },
+        "east":  { "texture": "#side", "cullface": "east" },
+        "west":  { "texture": "#side", "cullface": "west" },
+        "up":    { "texture": "#vertical", "cullface": "up" },
+        "down":  { "texture": "#vertical", "cullface": "down" }
+      }
+    },
+    {
+      "__comment": "LED drawn again just in front of the face so it glows in the dark",
+      "from": [3, 11, -0.01],
+      "to": [5, 12, 0],
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [11, 4, 13, 5],
+          "texture": "#north",
+          "cullface": "north",
+          "neoforge_data": { "block_light": 15, "sky_light": 15, "ambient_occlusion": false }
+        }
+      }
+    }
+  ]
+}

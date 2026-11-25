@@ -7,6 +7,7 @@ import com.simibubi.create.content.trains.track.TrackShape;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import com.tomas65107.moretraffic.block.AdvancedTrafficLightBlockEntity;
 import com.tomas65107.moretraffic.block.FlashingBlinkerBlockEntity;
+import com.tomas65107.moretraffic.block.LightControlCabinetBlock;
 import com.tomas65107.moretraffic.core.TrafficLightLight;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import net.createmod.catnip.math.Pointing;
@@ -178,6 +179,7 @@ public class ControlCabinetScenes {
                 .placeNearTarget()
                 .pointAt(util.vector().blockSurface(controlCabinet, Direction.WEST));
         showTrafficLight(scene, trafficLight, DyeColor.BLACK, DyeColor.GREEN);
+        scene.world().modifyBlock(controlCabinet, s -> s.setValue(LightControlCabinetBlock.LIT, true), false);
         scene.idle(90);
 
         scene.world().changeSignalState(signal, SignalBlockEntity.SignalState.RED);

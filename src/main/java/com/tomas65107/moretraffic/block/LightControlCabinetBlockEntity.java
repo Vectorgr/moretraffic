@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -287,6 +288,12 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
     public static void serverTick(Level level, BlockPos pos, BlockState state, LightControlCabinetBlockEntity be) {
 
         boolean linksChanged = be.refreshSignalLinks(level, pos);
+
+        //LED follows the running state; checked first because a stopped cabinet returns early below
+        if (state.getValue(LightControlCabinetBlock.LIT) != be.isRunning) {
+            state = state.setValue(LightControlCabinetBlock.LIT, be.isRunning);
+            level.setBlock(pos, state, Block.UPDATE_CLIENTS);
+        }
 
         //Cannot run when no instructions are added
         if (be.isRunning && be.instructions.isEmpty()) {

@@ -37,7 +37,7 @@
   "item.moretraffic.group_controller.tooltip.condition2": "When R-Clicked on a Control Cabinet",
   "item.moretraffic.group_controller.tooltip.behaviour2": "_Saves_ the group in the cabinet, replacing the one with the same name.",
   "item.moretraffic.group_controller.tooltip.condition3": "When R-Clicked elsewhere",
-  "item.moretraffic.group_controller.tooltip.behaviour3": "Changes the _group name_.",
+  "item.moretraffic.group_controller.tooltip.behaviour3": "Changes the _group name_ and _removes_ blocks from it.",
 
   "block.moretraffic.blinker.tooltip.summary": "Simple light that can be _colored_ and _placed_",
   "block.moretraffic.blinker.tooltip.condition1": "When Redstone-powered or pulsed with Control Cabinet",
@@ -203,7 +203,11 @@
   "gui.moretraffic.control_cabinet.groups.select.none": "Group",
   "gui.moretraffic.control_cabinet.groups.select.empty": "There are no named groups. Create one with a Group Controller or in Manage groups.",
   "gui.moretraffic.control_cabinet.groups.select.missing": "Group named '%s' does not exist",
-  "gui.moretraffic.group_controller.title": "Group name",
+  "gui.moretraffic.group_controller.title": "Group Controller",
+  "gui.moretraffic.group_controller.remove": "Remove block from group",
+  "gui.moretraffic.group_controller.remove_all": "Remove all",
+  "gui.moretraffic.group_controller.empty": "No blocks in this group",
+  "gui.moretraffic.group_controller.unloaded": "Block not loaded",
 
   "gui.moretraffic.led_light.title": "LED Light Configuration",
   "gui.moretraffic.led_light.message": "Model be modified and then controlled with Control Cabinet. The 'Modify Light' instruction's first light color will be used.",

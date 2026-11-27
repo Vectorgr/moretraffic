@@ -9,7 +9,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class ServerHandleGroupController {
 
-    public static void handle(ClientRenameGroupControllerPacket payload, IPayloadContext ctx) {
+    public static void handle(ClientEditGroupControllerPacket payload, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             ItemStack stack = ctx.player().getItemInHand(payload.mainHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
             if (!(stack.getItem() instanceof GroupControllerItem)) return;
@@ -17,7 +17,7 @@ public class ServerHandleGroupController {
             String name = payload.name().trim();
             if (name.length() > GroupControllerData.MAX_NAME_LENGTH) name = name.substring(0, GroupControllerData.MAX_NAME_LENGTH);
 
-            stack.set(MTDataComponents.GROUP_CONTROLLER.get(), GroupControllerItem.getData(stack).withName(name));
+            stack.set(MTDataComponents.GROUP_CONTROLLER.get(), GroupControllerItem.getData(stack).withName(name).without(payload.removed()));
         });
     }
 

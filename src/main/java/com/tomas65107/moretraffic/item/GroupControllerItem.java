@@ -33,7 +33,7 @@ import java.util.List;
  * Collects the positions of MoreTraffic blocks into a named group, which is then given to a Light Control Cabinet.
  * <p>
  * Right click a controllable block to add or remove it, right click a cabinet to save the group in it,
- * and right click anything outside this mod (or the air) to rename the group.
+ * and right click anything outside this mod (or the air) to rename the group or remove blocks from it.
  */
 public class GroupControllerItem extends Item {
 
@@ -75,7 +75,7 @@ public class GroupControllerItem extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (level.isClientSide) GroupControllerScreen.open(hand, getData(stack).name());
+        if (level.isClientSide) GroupControllerScreen.open(hand, getData(stack));
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }
 

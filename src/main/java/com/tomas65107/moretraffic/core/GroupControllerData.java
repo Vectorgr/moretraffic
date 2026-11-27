@@ -37,6 +37,12 @@ public record GroupControllerData(String name, List<BlockPos> positions) {
         return new GroupControllerData(newName, positions);
     }
 
+    public GroupControllerData without(List<BlockPos> removed) {
+        List<BlockPos> newPositions = new ArrayList<>(positions);
+        newPositions.removeAll(removed);
+        return new GroupControllerData(name, newPositions);
+    }
+
     /** Adds the position, or removes it if it was already in the group. */
     public GroupControllerData toggle(BlockPos pos) {
         List<BlockPos> newPositions = new ArrayList<>(positions);

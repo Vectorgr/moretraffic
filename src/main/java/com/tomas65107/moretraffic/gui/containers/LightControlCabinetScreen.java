@@ -189,26 +189,8 @@ public class LightControlCabinetScreen extends AbstractTomiContainerScreen<Light
                 addBaseWidget(new ColorButton(guiX + 164, renderY + 4, 14, 14, modifyLight.light2().getTextureDiffuseColor(), b -> {
                     displaySheet(finalIndex, modifyLight, 2);
                 }, false, true));
-                BetterEditBox textField = new BetterEditBox(guiX + 89, renderY + 7, 40, 14);
-                textField.setBordered(false);
-                textField.setValue(modifyLight.group());
-                textField.setTextColor(rgb(PRIMARY));
-                textField.onSave(() -> {
-                    if (be.groups.stream().noneMatch(g -> g.name.equals(textField.getValue()))) return;
-                    be.instructions.set(finalIndex, new ModifyLight(textField.getValue(), modifyLight.light0(), modifyLight.light1(), modifyLight.light2()));
-                    updateBEAndRefreshBE();
-                });
-                textField.onChange(text -> {
-                    if (be.groups.stream().noneMatch(g -> g.name.equals(text))) {
-                        textField.setTextColor(rgb(ERROR));
-                        textField.showFloatingTooltip(new NoticeBoxTooltip(Component.translatable("gui.moretraffic.error_saving"), Component.literal("Group named '" + text + "' does not exist"), NoticeBoxTooltip.TooltipType.ERROR));
-                    } else {
-                        textField.setTextColor(rgb(PRIMARY));
-                        textField.hideFloatingTooltip();
-                    }
-                });
-                textField.active = !be.isRunning;
-                addBaseWidget(textField);
+                addGroupSelector(guiX + 87, renderY + 4, 45, modifyLight.group(), name ->
+                        be.instructions.set(finalIndex, new ModifyLight(name, modifyLight.light0(), modifyLight.light1(), modifyLight.light2())));
             } else if (instruction instanceof ModifyDisplay modifyDisplay) {
                 addBaseWidget(new AdvancedButton(guiX + 164, renderY + 4, 14, 14, SpritesManager.EDIT_DISPLAY, new NoticeBoxTooltip(Component.translatable("gui.moretraffic.control_cabinet.instruction.modify_display.modify")), true, b->{
                     int sheetWidth = 250;
@@ -271,51 +253,15 @@ public class LightControlCabinetScreen extends AbstractTomiContainerScreen<Light
                             }
                     );
                 }));
-                BetterEditBox textField = new BetterEditBox(guiX + 120, renderY + 7, 40, 14);
-                textField.setBordered(false);
-                textField.setValue(modifyDisplay.group());
-                textField.setTextColor(rgb(PRIMARY));
-                textField.onSave(() -> {
-                    if (be.groups.stream().noneMatch(g -> g.name.equals(textField.getValue()))) return;
-                    be.instructions.set(finalIndex, new ModifyDisplay(textField.getValue(), modifyDisplay.trafficDisplayPixels()));
-                    updateBEAndRefreshBE();
-                });
-                textField.onChange(text -> {
-                    if (be.groups.stream().noneMatch(g -> g.name.equals(text))) {
-                        textField.setTextColor(rgb(ERROR));
-                        textField.showFloatingTooltip(new NoticeBoxTooltip(Component.translatable("gui.moretraffic.error_saving"), Component.literal("Group named '" + text + "' does not exist"), NoticeBoxTooltip.TooltipType.ERROR));
-                    } else {
-                        textField.setTextColor(rgb(PRIMARY));
-                        textField.hideFloatingTooltip();
-                    }
-                });
-                textField.active = !be.isRunning;
-                addBaseWidget(textField);
+                addGroupSelector(guiX + 118, renderY + 4, 44, modifyDisplay.group(), name ->
+                        be.instructions.set(finalIndex, new ModifyDisplay(name, ((ModifyDisplay) be.instructions.get(finalIndex)).trafficDisplayPixels())));
             } else if (instruction instanceof SendPulse(String group, boolean enable)) {
                 addBaseWidget(Checkbox.builder(Component.literal(""), Minecraft.getInstance().font).pos(guiX + 164, renderY + 4) .selected(enable) .onValueChange((b, a)-> {
                     be.instructions.set(finalIndex, new SendPulse(group, a)); updateBEAndRefreshBE();
                 }) .build());
 
-                BetterEditBox textField = new BetterEditBox(guiX + 120, renderY + 7, 40, 14);
-                textField.setBordered(false);
-                textField.setValue(group);
-                textField.setTextColor(rgb(PRIMARY));
-                textField.onSave(() -> {
-                    if (be.groups.stream().noneMatch(g -> g.name.equals(textField.getValue()))) return;
-                    be.instructions.set(finalIndex, new SendPulse(textField.getValue(), enable));
-                    updateBEAndRefreshBE();
-                });
-                textField.onChange(text -> {
-                    if (be.groups.stream().noneMatch(g -> g.name.equals(text))) {
-                        textField.setTextColor(rgb(ERROR));
-                        textField.showFloatingTooltip(new NoticeBoxTooltip(Component.translatable("gui.moretraffic.error_saving"), Component.literal("Group named '" + text + "' does not exist"), NoticeBoxTooltip.TooltipType.ERROR));
-                    } else {
-                        textField.setTextColor(rgb(PRIMARY));
-                        textField.hideFloatingTooltip();
-                    }
-                });
-                textField.active = !be.isRunning;
-                addBaseWidget(textField);
+                addGroupSelector(guiX + 118, renderY + 4, 44, group, name ->
+                        be.instructions.set(finalIndex, new SendPulse(name, enable)));
             }
 
             addBaseWidget(new AdvancedButton(guiX + 183, renderY + 6, 9, 9, SpritesManager.ICON_TRASHCAN,
@@ -722,6 +668,84 @@ public class LightControlCabinetScreen extends AbstractTomiContainerScreen<Light
             }
         });
 
+    }
+
+    /** Button showing the group of an instruction; opens the list of existing groups to pick another. */
+    private void addGroupSelector(int x, int y, int width, String current, Consumer<String> onSelect) {
+        boolean exists = be.groups.stream().anyMatch(g -> g.name.equals(current));
+
+        String label = current.isEmpty()
+                ? Component.translatable("gui.moretraffic.control_cabinet.groups.select.none").getString()
+                : current;
+        Component shown = Component.literal(fitText(label, width - 6))
+                .withColor(rgb(current.isEmpty() ? SECONDARY : exists ? PRIMARY : ERROR));
+
+        NoticeBoxTooltip tooltip = !exists && !current.isEmpty()
+                ? new NoticeBoxTooltip(Component.translatable("gui.moretraffic.error_saving"), Component.translatable("gui.moretraffic.control_cabinet.groups.select.missing", current), NoticeBoxTooltip.TooltipType.ERROR)
+                : new NoticeBoxTooltip(Component.translatable("gui.moretraffic.control_cabinet.groups.select"));
+
+        AdvancedButton button = new AdvancedButton(x, y, width, 14, Component.empty(), tooltip, b -> displayGroupSheet(0, current, onSelect)) {
+            @Override
+            protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+                guiGraphics.drawString(Minecraft.getInstance().font, shown, getX() + 3, getY() + 3, rgb(PRIMARY), true);
+            }
+        };
+        button.active = !be.isRunning;
+        addBaseWidget(button);
+    }
+
+    private void displayGroupSheet(int page, String current, Consumer<String> onSelect) {
+        int sheetWidth = 230;
+        int sheetHeight = 180;
+        int perPage = 10; // two columns of five
+
+        int sheetX = guiX + (guiWidth - sheetWidth) / 2;
+        int sheetY = guiY + (guiHeight - sheetHeight) / 2;
+
+        List<String> names = be.groups.stream().map(g -> g.name).filter(n -> !n.isEmpty()).toList();
+        int pages = Math.max(1, (names.size() + perPage - 1) / perPage);
+
+        addScreenSheet(new AbstractSheet(sheetX, sheetY, Component.translatable("gui.moretraffic.control_cabinet.groups.select").getString(), true, sheetWidth, sheetHeight) {
+            @Override
+            public void init(Consumer<AbstractWidget> adder) {
+                if (names.isEmpty()) {
+                    int offset = 40;
+                    for (Component component : cutTextComponent(Component.translatable("gui.moretraffic.control_cabinet.groups.select.empty"), 0, 200, true)) {
+                        adder.accept(new LabelWidget(align(CENTER, component, sheetWidth / 2), offset, component, rgb(SECONDARY), true));
+                        offset += 10;
+                    }
+                    return;
+                }
+
+                for (int i = page * perPage; i < Math.min(names.size(), (page + 1) * perPage); i++) {
+                    String name = names.get(i);
+                    int slot = i - page * perPage;
+                    Component label = Component.literal(name).withColor(rgb(name.equals(current) ? SELECTED : PRIMARY));
+                    adder.accept(new AdvancedButton(10 + (slot % 2) * 108, 25 + (slot / 2) * 23, 102, NORMAL_HEIGHT, label, null, null, b -> {
+                        onSelect.accept(name);
+                        updateBEAndRefreshBE();
+                        onClose();
+                    }));
+                }
+
+                if (pages > 1) {
+                    AdvancedButton previous = new AdvancedButton(10, sheetHeight - 30, NORMAL_HEIGHT, NORMAL_HEIGHT, Component.literal("<"), null, null, b -> displayGroupSheet(page - 1, current, onSelect));
+                    AdvancedButton next = new AdvancedButton(65, sheetHeight - 30, NORMAL_HEIGHT, NORMAL_HEIGHT, Component.literal(">"), null, null, b -> displayGroupSheet(page + 1, current, onSelect));
+                    previous.active = page > 0;
+                    next.active = page < pages - 1;
+                    adder.accept(previous);
+                    adder.accept(next);
+                    adder.accept(new LabelWidget(38, sheetHeight - 24, Component.literal((page + 1) + "/" + pages), rgb(SECONDARY), true));
+                }
+            }
+        });
+    }
+
+    private String fitText(String text, int maxWidth) {
+        var font = Minecraft.getInstance().font;
+        if (font.width(text) <= maxWidth) return text;
+        return font.plainSubstrByWidth(text, maxWidth - font.width("..")) + "..";
     }
 
     private void updateBEAndRefreshBE() {

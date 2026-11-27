@@ -2,6 +2,7 @@ package com.tomas65107.moretraffic.mod;
 
 import com.tomas65107.moretraffic.mod.compat.MoreTrafficCompat;
 import com.tomas65107.moretraffic.mod.gametests.SelfServerTest;
+import com.tomas65107.moretraffic.mod.registration.MTDataComponents;
 import com.tomas65107.moretraffic.mod.registration.MTRegistrate;
 import net.minecraft.data.DataProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -35,6 +36,7 @@ public class MoreTraffic {
         MTRegistrate.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         MENUS.register(modEventBus);
+        MTDataComponents.DATA_COMPONENTS.register(modEventBus);
         MoreTrafficCompat.init();
 
         if (SELF_SERVER_TEST) {

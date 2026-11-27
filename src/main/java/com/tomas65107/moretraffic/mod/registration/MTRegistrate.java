@@ -9,6 +9,7 @@ import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.TooltipModifier;
 import com.tomas65107.moretraffic.block.*;
 import com.tomas65107.moretraffic.core.blocktypes.MTBaseColoredBlockEntity;
+import com.tomas65107.moretraffic.item.GroupControllerItem;
 import com.tomas65107.moretraffic.mod.MoreTraffic;
 import com.tomas65107.moretraffic.mod.compat.displaylink.CabinetDisplayTarget;
 import com.tomas65107.moretraffic.mod.compat.displaylink.SignalOccupancyDisplaySource;
@@ -269,6 +270,17 @@ public class MTRegistrate {
 
     public static final ItemEntry<Item> LIGHT_DIODE = REGISTRATE.
             item("light", Item::new)
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+            .onRegisterAfter(Registries.ITEM, item ->
+                    TooltipModifier.REGISTRY.register(item, new ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)))
+            .removeTab(CreativeModeTabs.SEARCH)
+            .register();
+
+
+    public static final ItemEntry<GroupControllerItem> GROUP_CONTROLLER = REGISTRATE
+            .item("group_controller", GroupControllerItem::new)
+            .properties(p -> p.stacksTo(1))
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
             .onRegisterAfter(Registries.ITEM, item ->

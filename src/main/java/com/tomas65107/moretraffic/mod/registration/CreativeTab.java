@@ -21,6 +21,7 @@ public class CreativeTab {
                         output.accept(LIGHT_DIODE.get().asItem().getDefaultInstance());
                         output.accept(BLINKER.get().asItem().getDefaultInstance());
                         output.accept(LIGHT_CONTROL_CABINET.get().asItem().getDefaultInstance());
+                        output.accept(GROUP_CONTROLLER.get().getDefaultInstance());
                         output.accept(TRAFFIC_DISPLAY.get().asItem().getDefaultInstance());
                         output.accept(LEDSTRIP.get().asItem().getDefaultInstance());
                         output.accept(DERAILER.get().asItem().getDefaultInstance());

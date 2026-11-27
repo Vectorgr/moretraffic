@@ -39,6 +39,11 @@ public class MTNetworking {
                 ServerLightHandle::handle
         );
         registrar.playToServer(
+                ClientRenameGroupControllerPacket.TYPE,
+                ClientRenameGroupControllerPacket.STREAM_CODEC,
+                ServerHandleGroupController::handle
+        );
+        registrar.playToServer(
                 ClientSyncSignboard.TYPE,
                 ClientSyncSignboard.STREAM_CODEC,
                 ServerHandleSignboard::handle

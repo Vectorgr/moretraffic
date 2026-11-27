@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "r",
+    "e",
+    "I"
+  ],
+  "key": {
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "e": {
+      "item": "create:electron_tube"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "moretraffic:group_controller",
+    "count": 1
+  }
+}

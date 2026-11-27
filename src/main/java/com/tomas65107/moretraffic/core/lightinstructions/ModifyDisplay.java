@@ -28,14 +28,14 @@ public record ModifyDisplay(String group, TrafficDisplayPixels trafficDisplayPix
                     if (level.getBlockEntity(lightPos) instanceof TrafficDisplayBlockEntity trafficDisplayBlockEntity) {
                         trafficDisplayBlockEntity.modifyDisplayPixels(displayPixels);
                     } else {
-                        be.isRunning = false;
+                        be.stopForUnsupportedBlock(lightPos, "supports_modify_display");
                         return false; //cannot find the traffic light at that position
                     }
                 }
                 return true; //all traffic lights found successfully and modified
 
             } else {
-                be.isRunning = false;
+                be.stopForUnusableGroup(igroup);
                 return false;
             }
         }

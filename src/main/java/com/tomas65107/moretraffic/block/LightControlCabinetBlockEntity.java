@@ -45,6 +45,8 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
     public int lastInstructionFinishedTick;
     public short programStep;
     public boolean shouldLoop;
+    /** Why the program stopped by itself, shown in the GUI. Null while running or when stopped by a player. */
+    public @Nullable Component stopReason;
     public List<TrafficLightGroup> groups = new ArrayList<>();
     public List<LightInstructionProperty> instructions = new ArrayList<>();
     //Display Link position -> whether the train signal it reads was last seen red
@@ -72,6 +74,10 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
         ticksSinceStart = tag.getInt("TicksSinceStart");
         lastInstructionFinishedTick = tag.getInt("LastInstructionFinishedTick");
         programStep = tag.getShort("ProgramStep");
+
+        stopReason = tag.contains("StopReason", 8) // 8 = StringTag
+                ? Component.Serializer.fromJson(tag.getString("StopReason"), registries)
+                : null;
 
         instructions.clear();
 
@@ -153,6 +159,7 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
         tag.putInt("TicksSinceStart", ticksSinceStart);
         tag.putInt("LastInstructionFinishedTick", lastInstructionFinishedTick);
         tag.putShort("ProgramStep", programStep);
+        if (stopReason != null) tag.putString("StopReason", Component.Serializer.toJson(stopReason, registries));
 
         // instructions
         ListTag instructionsTag = new ListTag();
@@ -217,6 +224,33 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
         }
         tag.put("Groups", groupsTag);
 
+    }
+
+    /** Stops the program because the current instruction cannot be executed. */
+    public void stopAtCurrentStep(Component reason) {
+        isRunning = false;
+        stopReason = Component.translatable("gui.moretraffic.control_cabinet.stopped.step",
+                programStep + 1,
+                instructions.get(programStep).getClassType().getComponentOfProperty(false),
+                reason);
+    }
+
+    /** For an instruction whose group has no positions to act on. */
+    public void stopForUnusableGroup(String groupName) {
+        boolean exists = groups.stream().anyMatch(g -> g.name.equals(groupName));
+        stopAtCurrentStep(Component.translatable("gui.moretraffic.control_cabinet.stopped." + (exists ? "group_empty" : "group_missing"), groupName));
+    }
+
+    /**
+     * For a position in a group that holds something the instruction cannot control.
+     * @param supportedKey translation key listing the blocks the instruction works with
+     */
+    public void stopForUnsupportedBlock(BlockPos blockPos, String supportedKey) {
+        if (level == null) return;
+        stopAtCurrentStep(Component.translatable("gui.moretraffic.control_cabinet.stopped.unsupported_block",
+                level.getBlockState(blockPos).getBlock().getName(),
+                blockPos.toShortString(),
+                Component.translatable("gui.moretraffic.control_cabinet.stopped." + supportedKey)));
     }
 
     /** Whether at least one Display Link on a train signal is connected to this cabinet. */
@@ -295,9 +329,13 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
             level.setBlock(pos, state, Block.UPDATE_CLIENTS);
         }
 
+        //a program that was started again forgets why it stopped last time
+        if (be.isRunning) be.stopReason = null;
+
         //Cannot run when no instructions are added
         if (be.isRunning && be.instructions.isEmpty()) {
             be.isRunning = false;
+            be.stopReason = Component.translatable("gui.moretraffic.control_cabinet.stopped.no_instructions");
         } else
 
             //Handle illegal values ui prevents setting (changed to run only when running)
@@ -313,6 +351,7 @@ public class LightControlCabinetBlockEntity extends BlockEntity implements MenuP
                     be.lastInstructionFinishedTick = 0;
                     be.ticksSinceStart = 0;
                 } else {
+                    if (be.isRunning) be.stopReason = Component.translatable("gui.moretraffic.control_cabinet.stopped.finished");
                     be.isRunning = false;
                 }
             } else

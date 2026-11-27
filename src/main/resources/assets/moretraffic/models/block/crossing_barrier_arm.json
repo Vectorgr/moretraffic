@@ -1,0 +1,33 @@
+{
+	"format_version": "26.3",
+	"credit": "Made with Blockbench",
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "moretraffic:block/crossing_barrier_arm",
+		"particle": "moretraffic:block/crossing_barrier_arm"
+	},
+	"elements": [
+		{
+			"from": [-16, 9, 7],
+			"to": [32, 13, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 9, 7]},
+			"faces": {
+				"north": {"uv": [12, 1, 0, 2], "texture": "#0"},
+				"east": {"uv": [0, 2, 0.25, 1], "texture": "#0"},
+				"south": {"uv": [0, 1, 12, 2], "texture": "#0"},
+				"west": {"uv": [0, 1, 0.25, 2], "texture": "#0"},
+				"up": {"uv": [0, 1, 12, 1.25], "texture": "#0"},
+				"down": {"uv": [12, 1, 0, 1.25], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"gui": {
+			"scale": [0.35, 0.4, 1]
+		},
+		"fixed": {
+			"translation": [68, 18, 16.25],
+			"scale": [3, 3, 1.5]
+		}
+	}
+}

@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=north,lowered=false": { "model": "moretraffic:block/crossing_barrier" },
+    "facing=north,lowered=true":  { "model": "moretraffic:block/crossing_barrier" },
+    "facing=east,lowered=false":  { "model": "moretraffic:block/crossing_barrier", "y": 90 },
+    "facing=east,lowered=true":   { "model": "moretraffic:block/crossing_barrier", "y": 90 },
+    "facing=south,lowered=false": { "model": "moretraffic:block/crossing_barrier", "y": 180 },
+    "facing=south,lowered=true":  { "model": "moretraffic:block/crossing_barrier", "y": 180 },
+    "facing=west,lowered=false":  { "model": "moretraffic:block/crossing_barrier", "y": 270 },
+    "facing=west,lowered=true":   { "model": "moretraffic:block/crossing_barrier", "y": 270 }
+  }
+}

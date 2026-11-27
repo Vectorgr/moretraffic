@@ -35,14 +35,14 @@ public record ModifyLight(String group, DyeColor light0, DyeColor light1, DyeCol
                         led.setChanged();
                         level.sendBlockUpdated(led.getBlockPos(), led.getBlockState(), led.getBlockState(), 3);
                     } else {
-                        be.isRunning = false;
+                        be.stopForUnsupportedBlock(lightPos, "supports_modify_light");
                         return false; //cannot find the traffic light at that position
                     }
                 }
                 return true; //all traffic lights found successfully and modified
 
             } else {
-                be.isRunning = false;
+                be.stopForUnusableGroup(modifyLight.group());
                 return false;
             }
         }

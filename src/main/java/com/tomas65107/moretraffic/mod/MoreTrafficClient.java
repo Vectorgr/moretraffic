@@ -62,6 +62,11 @@ public class MoreTrafficClient {
         );
 
         BlockEntityRenderers.register(
+                CROSSING_BARRIER_BE.get(),
+                CrossingBarrierRenderer::new
+        );
+
+        BlockEntityRenderers.register(
                 ADV_TRAFFIC_LIGHT_BE.get(),
                 TrafficLightBlockEntityRenderer::new
         );

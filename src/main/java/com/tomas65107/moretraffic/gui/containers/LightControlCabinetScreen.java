@@ -631,6 +631,7 @@ public class LightControlCabinetScreen extends AbstractTomiContainerScreen<Light
             } else {
                 be.ticksSinceStart = 0; be.lastInstructionFinishedTick = 0; be.programStep = 0;
                 be.isRunning = true;
+                be.stopReason = null;
             }
             updateBEAndRefreshBE();
         }));
@@ -659,6 +660,27 @@ public class LightControlCabinetScreen extends AbstractTomiContainerScreen<Light
                 );
             }
         }));
+
+        addBaseWidget(new CustomRenderAsWidget(this::renderStopReason));
+    }
+
+    /** Box at the left of the window explaining why the program stopped by itself. */
+    private void renderStopReason(GuiGraphics g) {
+        if (be.isRunning || be.stopReason == null) return;
+
+        int boxWidth = Math.min(140, guiX - 8);
+        if (boxWidth < 50) return;
+        int boxX = guiX - boxWidth - 4;
+        int boxY = guiY + 30;
+
+        List<Component> lines = new ArrayList<>();
+        lines.add(Component.translatable("gui.moretraffic.control_cabinet.stopped.title").withStyle(ChatFormatting.BOLD));
+        lines.addAll(cutTextComponent(be.stopReason, 0, boxWidth - 10, true));
+
+        g.fill(boxX, boxY, boxX + boxWidth, boxY + lines.size() * 10 + 8, 0xE0101010);
+        for (int i = 0; i < lines.size(); i++) {
+            g.drawString(Minecraft.getInstance().font, lines.get(i), boxX + 5, boxY + 5 + i * 10, rgb(i == 0 ? ERROR : PRIMARY), true);
+        }
     }
 
 

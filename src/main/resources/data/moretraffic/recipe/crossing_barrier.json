@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "r  ",
+    "III",
+    "I  "
+  ],
+  "key": {
+    "I": { "item": "minecraft:iron_ingot" },
+    "r": { "item": "minecraft:redstone" }
+  },
+  "result": {
+    "id": "moretraffic:crossing_barrier",
+    "count": 1
+  }
+}

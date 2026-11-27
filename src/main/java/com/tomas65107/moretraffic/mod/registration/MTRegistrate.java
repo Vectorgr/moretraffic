@@ -138,6 +138,27 @@ public class MTRegistrate {
             .register();
 
 
+    public static final BlockEntry<CrossingBarrierBlock> CROSSING_BARRIER = datagen(REGISTRATE
+            .block("crossing_barrier", CrossingBarrierBlock::new)
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .properties(p -> p
+                    .strength(2.0f, 4.0f)
+                    .requiresCorrectToolForDrops()
+                    .mapColor(DyeColor.LIGHT_GRAY)
+                    .noOcclusion()
+            )
+            .item()    .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .onRegisterAfter(Registries.ITEM, item ->
+                    TooltipModifier.REGISTRY.register(item, new ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)))
+            .removeTab(CreativeModeTabs.SEARCH)
+            .build()
+    ).register();
+    public static final BlockEntityEntry<CrossingBarrierBlockEntity> CROSSING_BARRIER_BE = REGISTRATE
+            .blockEntity("crossing_barrier", CrossingBarrierBlockEntity::new)
+            .validBlock(CROSSING_BARRIER)
+            .register();
+
+
     public static final BlockEntry<TrafficTrussBlock> TRAFFIC_TRUSS = datagen(REGISTRATE
             .block("traffic_truss", TrafficTrussBlock::new)
             .tag(BlockTags.MINEABLE_WITH_PICKAXE)

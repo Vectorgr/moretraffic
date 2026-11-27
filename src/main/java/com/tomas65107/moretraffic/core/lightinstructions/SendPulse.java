@@ -31,13 +31,13 @@ public record SendPulse(String group, boolean enable) implements LightInstructio
                         ((BlockEntity)pulsable).setChanged();
                         level.sendBlockUpdated(((BlockEntity)pulsable).getBlockPos(), ((BlockEntity)pulsable).getBlockState(), ((BlockEntity)pulsable).getBlockState(), 3);
                     } else {
-                        be.isRunning = false;
+                        be.stopForUnsupportedBlock(lightPos, "supports_send_pulse");
                         return false; //cannot find supported block there
                     }
                 }
                 return true;
             } else {
-                be.isRunning = false;
+                be.stopForUnusableGroup(igroup);
                 return false;
             }
         }
